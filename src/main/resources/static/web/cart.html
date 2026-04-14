@@ -14,6 +14,7 @@
 		<link href="../bootstrap3/css/bootstrap.css" rel="stylesheet" type="text/css">
 		<script src="../bootstrap3/jquery-1.9.1.min.js"></script>
 		<script src="../bootstrap3/js/bootstrap.js"></script>
+		<script src="../js/topbar.js" type="text/javascript" charset="utf-8"></script>
 		<!-- 字体图标 -->
 		<link rel="stylesheet" href="../bootstrap3/font-awesome-4.7.0/css/font-awesome.css" />
 		<link rel="stylesheet" type="text/css" href="../css/layout.css" />
@@ -46,7 +47,7 @@
 							<!--下列列表按钮 ：管理-->
 							<div class="btn-group">
 								<button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown">
-									<span id="top-dropdown-btn"><span class="fa fa-gears"></span>&nbsp;管理 <span class="caret"></span></span>
+									<span id="top-dropdown-btn"><span class="fa fa-gears"></span>&nbsp;<span id="top-center-text">个人中心</span> <span class="caret"></span></span>
 								</button>
 								<ul class="dropdown-menu top-dropdown-ul" role="menu">
 									<li><a href="password.html">修改密码</a></li>
@@ -57,7 +58,7 @@
 							</div>
 						</li>
 						<li class="li-split">|</li>
-						<li><a href="login.html"><span class="fa fa-user"></span>&nbsp;登录</a></li>
+						<li><a id="link-login-logout" href="login.html"><span class="fa fa-user"></span>&nbsp;<span id="top-login-text">登录</span></a></li>
 					</ul>
 				</div>
 			</div>
@@ -112,57 +113,6 @@
 									</tr>
 								</thead>
 								<tbody id="cart-list" class="cart-body">
-									<tr>
-										<td>
-											<input type="checkbox" class="ckitem" />
-										</td>
-										<td><img src="../images/portal/12DELLXPS13-silvery/collect.png" class="img-responsive" /></td>
-										<td>联想(Lenovo)小新Air13 Pro 13.3英寸14.8mm超轻薄笔记本电脑</td>
-										<td>¥<span id="goodsPrice1">5298</span></td>
-										<td>
-											<input type="button" value="-" class="num-btn" onclick="reduceNum(1)" />
-											<input id="goodsCount1" type="text" size="2" readonly="readonly" class="num-text" value="1">
-											<input class="num-btn" type="button" value="+" onclick="addNum(1)" />
-										</td>
-										<td><span id="goodsCast1"></span></td>
-										<td>
-											<input type="button" onclick="delCartItem(this)" class="cart-del btn btn-default btn-xs" value="删除" />
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<input type="checkbox" class="ckitem" />
-										</td>
-										<td><img src="../images/portal/16LenovoYOGA900green/collect.png" class="img-responsive" /></td>
-										<td>戴尔(DELL)XPS13-9360-R1609 13.3</td>
-										<td>¥<span id="goodsPrice2">4988</span></td>
-										<td>
-											<input type="button" value="-" class="num-btn" onclick="reduceNum(2)" />
-											<input id="goodsCount2" type="text" size="2" readonly="readonly" class="num-text" value="1">
-											<input class="num-btn" type="button" value="+" onclick="addNum(2)" />
-										</td>
-										<td><span id="goodsCast2"></span></td>
-										<td>
-											<input type="button" onclick="delCartItem(this)" class="cart-del btn btn-default btn-xs" value="删除" />
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<input type="checkbox" class="ckitem" />
-										</td>
-										<td><img src="../images/portal/13LenovoIdeaPad310_silvery/collect.png" class="img-responsive" /></td>
-										<td>戴尔(DELL)魔方15MF Pro-R2505TSS灵越</td>
-										<td>¥<span id="goodsPrice3">4699</span></td>
-										<td>
-											<input type="button" value="-" class="num-btn" onclick="reduceNum(3)" />
-											<input id="goodsCount3" type="text" size="2" readonly="readonly" class="num-text" value="1">
-											<input class="num-btn" type="button" value="+" onclick="addNum(3)" />
-										</td>
-										<td><span id="goodsCast3"></span></td>
-										<td>
-											<input type="button" onclick="delCartItem(this)" class="cart-del btn btn-default btn-xs" value="删除" />
-										</td>
-									</tr>
 								</tbody>
 							</table>
 							<div class="total-bar">

@@ -19,6 +19,8 @@ public class LoginInterceptorConfigurer implements WebMvcConfigurer {
 
         //白名单
         List<String> patterns = new ArrayList<>();
+        patterns.add("/");
+        patterns.add("/index.html");
         patterns.add("/bootstrap3/**");
         patterns.add("/css/**");
         patterns.add("/images/**");
@@ -27,8 +29,11 @@ public class LoginInterceptorConfigurer implements WebMvcConfigurer {
         patterns.add("/web/login.html");
         patterns.add("/web/index.html");
         patterns.add("/web/product.html");
+        patterns.add("/products/**");
         patterns.add("/users/reg");
         patterns.add("/users/login");
+        patterns.add("/users/status");
+        patterns.add("/users/logout");
 
         registry.addInterceptor(interceptor).addPathPatterns("/**").excludePathPatterns(patterns);
     }

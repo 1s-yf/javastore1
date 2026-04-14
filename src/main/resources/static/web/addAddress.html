@@ -14,6 +14,8 @@
 		<link href="../bootstrap3/css/bootstrap.css" rel="stylesheet" type="text/css">
 		<script src="../bootstrap3/jquery-1.9.1.min.js"></script>
 		<script src="../bootstrap3/js/bootstrap.js"></script>
+		<script src="../js/topbar.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/jquery-getUrlParam.js" type="text/javascript" charset="utf-8"></script>
 		<!-- 字体图标 -->
 		<link rel="stylesheet" href="../bootstrap3/font-awesome-4.7.0/css/font-awesome.css" />
 		<link rel="stylesheet" type="text/css" href="../css/layout.css" />
@@ -46,7 +48,7 @@
 							<!--下列列表按钮 ：管理-->
 							<div class="btn-group">
 								<button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown">
-									<span id="top-dropdown-btn"><span class="fa fa-gears"></span>&nbsp;管理 <span class="caret"></span></span>
+									<span id="top-dropdown-btn"><span class="fa fa-gears"></span>&nbsp;<span id="top-center-text">个人中心</span> <span class="caret"></span></span>
 								</button>
 								<ul class="dropdown-menu top-dropdown-ul" role="menu">
 									<li><a href="password.html">修改密码</a></li>
@@ -57,7 +59,7 @@
 							</div>
 						</li>
 						<li class="li-split">|</li>
-						<li><a href="login.html"><span class="fa fa-user"></span>&nbsp;登录</a></li>
+						<li><a id="link-login-logout" href="login.html"><span class="fa fa-user"></span>&nbsp;<span id="top-login-text">登录</span></a></li>
 					</ul>
 				</div>
 			</div>
@@ -330,7 +332,7 @@
 						}
 					},
 					error:function (xhr) {
-						alert("获取区数据时产生未知的异常" + xhr.message);
+						alert("获取区数据时产生未知的异常" + getAjaxErrorMessage(xhr));
 					}
 				});
 			})
@@ -370,7 +372,7 @@
 						}
 					},
 					error:function (xhr) {
-						alert("获取城市数据时产生未知的异常" + xhr.message);
+						alert("获取城市数据时产生未知的异常" + getAjaxErrorMessage(xhr));
 					}
 				});
 			})
@@ -397,9 +399,25 @@
 						}
 					},
 					error:function (xhr) {
-						alert("获取省/直辖市数据时产生未知的异常" + xhr.message);
+						alert("获取省/直辖市数据时产生未知的异常" + getAjaxErrorMessage(xhr));
 					}
 				});
+			}
+
+			function getAjaxErrorMessage(xhr) {
+				if (!xhr) {
+					return "";
+				}
+				if (xhr.responseJSON && xhr.responseJSON.message) {
+					return xhr.responseJSON.message;
+				}
+				if (xhr.responseText) {
+					return xhr.responseText;
+				}
+				if (xhr.status) {
+					return "(HTTP " + xhr.status + ")";
+				}
+				return "";
 			}
 
 			$("#btn-add-new-address").click(function () {
@@ -410,13 +428,13 @@
 					dataType:"JSON",
 					success:function (json) {
 						if (json.state == 200) {
-							alert("添加地址成功");
+							location.href = "address.html";
 						} else {
-							alert("添加地址失败");
+							alert("添加地址失败" + (json.message ? ("：" + json.message) : ""));
 						}
 					},
 					error:function (xhr) {
-						alert("添加地址时产生未知的异常" + xhr.message);
+						alert("添加地址时产生未知的异常" + getAjaxErrorMessage(xhr));
 					}
 				});
 			});

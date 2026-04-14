@@ -9,8 +9,22 @@
 }
 /*顶部选项的li宽*/
 .top-item li {
-	width: 100px;
+	width: auto;
 	text-align: center;
+}
+
+/*个人中心下拉项宽度为其他两倍*/
+.top-item li.top-center-li {
+	width: auto;
+}
+
+/*个人中心显示区域宽度为其他两倍*/
+.top-item .btn-group {
+	min-width: 0;
+}
+.top-item .btn-group > button {
+	width: auto;
+	white-space: nowrap;
 }
 /*顶部选项竖线  |  的宽度*/
 .top-item .li-split {

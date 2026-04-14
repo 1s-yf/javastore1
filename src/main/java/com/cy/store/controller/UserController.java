@@ -49,6 +49,22 @@ public class UserController extends BaseController{
         return new JsonResult<User>(Ok,data);
     }
 
+    @RequestMapping("status")
+    public JsonResult<Boolean> status(HttpSession session) {
+        Object uid = session.getAttribute("uid");
+        boolean loggedIn = uid != null;
+        return new JsonResult<>(Ok, loggedIn);
+    }
+
+    @RequestMapping("logout")
+    public JsonResult<Void> logout(HttpSession session) {
+        try {
+            session.invalidate();
+        } catch (IllegalStateException e) {
+        }
+        return new JsonResult<>(Ok);
+    }
+
     @RequestMapping("change_password")
     public JsonResult<Void> changPassword(String oldPassword,String newPassword,HttpSession session) {
         Integer uid = getuidFromSession(session);

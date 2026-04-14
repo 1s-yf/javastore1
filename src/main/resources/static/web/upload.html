@@ -13,6 +13,8 @@
 		<link href="../bootstrap3/css/bootstrap.css" rel="stylesheet" type="text/css">
 		<script src="../bootstrap3/jquery-1.9.1.min.js"></script>
 		<script src="../bootstrap3/js/bootstrap.js"></script>
+		<script src="../js/topbar.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/jquery.cookie.js" type="text/javascript" charset="utf-8"></script>
 		<!-- 字体图标 -->
 		<link rel="stylesheet" href="../bootstrap3/font-awesome-4.7.0/css/font-awesome.css" />
 		<link rel="stylesheet" type="text/css" href="../css/layout.css" />
@@ -43,7 +45,7 @@
 							<!--下列列表按钮 ：管理-->
 							<div class="btn-group">
 								<button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown">
-									<span id="top-dropdown-btn"><span class="fa fa-gears"></span>&nbsp;管理 <span class="caret"></span></span>
+									<span id="top-dropdown-btn"><span class="fa fa-gears"></span>&nbsp;<span id="top-center-text">个人中心</span> <span class="caret"></span></span>
 								</button>
 								<ul class="dropdown-menu top-dropdown-ul" role="menu">
 									<li><a href="password.html">修改密码</a></li>
@@ -54,7 +56,7 @@
 							</div>
 						</li>
 						<li class="li-split">|</li>
-						<li><a href="login.html"><span class="fa fa-user"></span>&nbsp;登录</a></li>
+						<li><a id="link-login-logout" href="login.html"><span class="fa fa-user"></span>&nbsp;<span id="top-login-text">登录</span></a></li>
 					</ul>
 				</div>
 			</div>
@@ -243,12 +245,34 @@
 		</footer>
 		<!--页脚结束-->
 		<script type="text/javascript">
-			//bug:切换到其他页面再切回来这个也不不执行，还是显示默认头像
-			//"重启服务器会导致upload之前的文件路径发生变化，导致取不到头像"
 			$(document).ready(function () {
-				let avatar = $.cookie("avatar");
-				$("#img-avatar").attr("src",avatar);
+				$.ajax({
+					url: "/users/get_by_uid",
+					type: "GET",
+					dataType: "JSON",
+					success: function (json) {
+						if (json.state == 200 && json.data && json.data.avatar) {
+							$("#img-avatar").attr("src", json.data.avatar);
+						}
+					}
+				});
 			});
+
+			function getAjaxErrorMessage(xhr) {
+				if (!xhr) {
+					return "";
+				}
+				if (xhr.responseJSON && xhr.responseJSON.message) {
+					return xhr.responseJSON.message;
+				}
+				if (xhr.responseText) {
+					return xhr.responseText;
+				}
+				if (xhr.status) {
+					return "(HTTP " + xhr.status + ")";
+				}
+				return "";
+			}
 
 			$("#btn-change-avatar").click(function () {
 				$.ajax({
@@ -263,14 +287,12 @@
 							alert("头像修改成功");
 							//将服务器返回的头像地址设置到img上
 							$("#img-avatar").attr("src",json.data);
-							//将头像保存在cookie中，这样关掉浏览器再打开进入上传头像页面也会显示头像
-							$.cookie("avatar",json.data,{expires:7});
 						} else {
 							alert("头像修改失败");
 						}
 					},
 					error:function (xhr) {
-						alert("修改头像时产生未知的异常" + xhr.message);
+						alert("修改头像时产生未知的异常" + getAjaxErrorMessage(xhr));
 					}
 				});
 			});

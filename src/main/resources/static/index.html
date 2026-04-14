@@ -28,6 +28,24 @@
 			<img src="images/index/stumalllogo.png" alt="" />
 			<span class="pull-right"><small>欢迎访问</small><b>电脑商城</b></span>
 		</header>
+
+		<div class="modal fade" id="login-prompt-modal" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-sm" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">提示</h4>
+					</div>
+					<div class="modal-body">
+						<p id="login-prompt-text">请登录后继续浏览商品~~</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" id="btn-go-login">立即登录/注册</button>
+						<button type="button" class="btn btn-default" id="btn-skip-login" data-dismiss="modal">暂不登录</button>
+					</div>
+				</div>
+			</div>
+		</div>
 		<!--主体-->
 		<div class="container mycontent">
 			<!--透明层 -->
@@ -115,6 +133,27 @@
 			</div>
 		</footer>
 		<!--页脚结束-->
+		<script type="text/javascript">
+			$(document).ready(function() {
+				var skipKey = "skip_login_prompt";
+				$.ajax({
+					url: "/users/status",
+					type: "GET",
+					dataType: "json",
+					success: function(json) {
+						if (json.state === 200 && json.data === false && !sessionStorage.getItem(skipKey)) {
+							$("#login-prompt-modal").modal({ backdrop: 'static', keyboard: false });
+						}
+					}
+				});
+				$("#btn-go-login").click(function() {
+					location.href = "web/login.html";
+				});
+				$("#btn-skip-login").click(function() {
+					sessionStorage.setItem(skipKey, "1");
+				});
+			});
+		</script>
 	</body>
 
 </html>
