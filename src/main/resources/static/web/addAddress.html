@@ -142,10 +142,11 @@
 					<div class="panel-body">
 						<!--新增收货地址表单开始-->
 						<form id="form-add-new-address" class="form-horizontal" role="form">
+							<input id="input-aid" name="aid" type="hidden" />
 							<div class="form-group">
 								<label class="col-md-2 control-label"><span class="txtred">*</span>收货人：</label>
 								<div class="col-md-8">
-									<input name="name" type="text" class="form-control" placeholder="请输入收货人姓名">
+									<input name="name" type="text" class="form-control" placeholder="请输入收货人姓名" maxlength="20">
 								</div>
 							</div>
 							<div class="address_content" data-toggle="distpicker">
@@ -166,30 +167,30 @@
 									</div>
 									<label class="col-md-2 control-label">邮政编码：</label>
 									<div class="col-md-3">
-										<input name="zip" type="text" class="form-control" placeholder="请输入邮政编码">
+										<input name="zip" type="text" class="form-control" placeholder="请输入邮政编码" maxlength="6">
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-md-2 control-label"><span class="txtred">*</span>详细地址：</label>
 								<div class="col-md-8">
-									<textarea name="address" class="form-control" rows="3" placeholder="输入详细的收货地址，小区名称、门牌号等"></textarea>
+									<textarea name="address" class="form-control" rows="3" placeholder="输入详细的收货地址，小区名称、门牌号等" maxlength="50"></textarea>
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-md-2 control-label"><span class="txtred">*</span>手机：</label>
 								<div class="col-md-3">
-									<input name="phone" type="text" class="form-control" placeholder="请输入手机号码">
+									<input name="phone" type="text" class="form-control" placeholder="请输入手机号码" maxlength="20">
 								</div>
 								<label class="col-md-2 control-label">固话：</label>
 								<div class="col-md-3">
-									<input name="tel" type="text" class="form-control" placeholder="请输入固定电话号码">
+									<input name="tel" type="text" class="form-control" placeholder="请输入固定电话号码" maxlength="20">
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-md-2 control-label">地址类型：</label>
 								<div class="col-md-8">
-									<input name="tag" type="text" class="form-control" placeholder="请输入地址类型，如：家、公司或者学校">
+									<input name="tag" type="text" class="form-control" placeholder="请输入地址类型，如：家、公司或者学校" maxlength="20">
 								</div>
 							</div>
 							<div class="form-group">
@@ -295,7 +296,12 @@
 
 			//页面加载了先处理省的列表
 			$(document).ready(function () {
-				showProvinceList();
+				const aid = $.getUrlParam("aid");
+				showProvinceList(function () {
+					if (aid) {
+						loadAddressForEdit(aid);
+					}
+				});
 				$("#city-list").append(defaultOption);//城市和地区列表上显示为默认的“请选择”
 				$("#area-list").append(defaultOption);
 			});
@@ -315,64 +321,24 @@
 				}
 
 				$.ajax({
-					url:"/districts/",
-					type:"GET",//POST也行，这里数据量小
-					data:"parent=" + parent,
-					dataType:"JSON",
-					success:function (json) {
+					url: "/districts/",
+					type: "GET",//POST也行，这里数据量小
+					data: "parent=" + parent,
+					dataType: "JSON",
+					success: function (json) {
 						if (json.state == 200) {
 							let list = json.data;
 							for (let i = 0; i < list.length; i++) {
 								let opt =
-										"<option value='"+list[i].code+"'>"+list[i].name+"</option>>";
+										"<option value='" + list[i].code + "'>" + list[i].name + "</option>>";
 								$("#area-list").append(opt);
 							}
 						} else {
 							alert("获取区数据失败！");
 						}
 					},
-					error:function (xhr) {
+					error: function (xhr) {
 						alert("获取区数据时产生未知的异常" + getAjaxErrorMessage(xhr));
-					}
-				});
-			})
-
-			//监听省列表的改变，改变了则获取相应城市列表
-			$("#province-list").change(function () {
-				//获取省的代码，即parent
-				let parent = $("#province-list").val();
-
-				//清空原有的城市列表选项，防止上一次列表选项遗留
-				$("#area-list").empty();
-				$("#city-list").empty();
-				//填充默认值,"请选择"
-				$("#city-list").append(defaultOption);
-				$("#area-list").append(defaultOption);
-
-				//如果没选择省，则直接返回，结束函数
-				if (parent == 0) {
-					return
-				}
-
-				$.ajax({
-					url:"/districts/",
-					type:"GET",//POST也行，这里数据量小
-					data:"parent=" + parent,
-					dataType:"JSON",
-					success:function (json) {
-						if (json.state == 200) {
-							let list = json.data;
-							for (let i = 0; i < list.length; i++) {
-								let opt =
-										"<option value='"+list[i].code+"'>"+list[i].name+"</option>>";
-								$("#city-list").append(opt);
-							}
-						} else {
-							alert("获取城市数据失败！");
-						}
-					},
-					error:function (xhr) {
-						alert("获取城市数据时产生未知的异常" + getAjaxErrorMessage(xhr));
 					}
 				});
 			})
@@ -380,26 +346,137 @@
 
 
 			//向服务区发送获取省列表请求并将数据加到选项上(append)
-			function showProvinceList() {
+			function showProvinceList(onDone) {
 				$.ajax({
-					url:"/districts/",
-					type:"POST",
-					data:"parent=86",//返回所有省数据
-					dataType:"JSON",
-					success:function (json) {
+					url: "/districts/",
+					type: "POST",
+					data: "parent=86",//返回所有省数据
+					dataType: "JSON",
+					success: function (json) {
 						if (json.state == 200) {
 							let list = json.data;
 							for (let i = 0; i < list.length; i++) {
 								let opt =
-								"<option value='"+list[i].code+"'>"+list[i].name+"</option>>";
+										"<option value='" + list[i].code + "'>" + list[i].name + "</option>>";
 								$("#province-list").append(opt);
+							}
+							if (onDone) {
+								onDone();
 							}
 						} else {
 							alert("获取省/直辖市数据失败！");
 						}
 					},
-					error:function (xhr) {
+					error: function (xhr) {
 						alert("获取省/直辖市数据时产生未知的异常" + getAjaxErrorMessage(xhr));
+					}
+				});
+			}
+
+			function loadCities(provinceCode, selectedCityCode, onDone) {
+				$("#city-list").empty();
+				$("#city-list").append(defaultOption);
+				$("#area-list").empty();
+				$("#area-list").append(defaultOption);
+				if (!provinceCode || provinceCode == "0") {
+					if (onDone) {
+						onDone();
+					}
+					return;
+				}
+				$.ajax({
+					url: "/districts/",
+					type: "GET",
+					data: "parent=" + provinceCode,
+					dataType: "JSON",
+					success: function (json) {
+						if (json.state == 200) {
+							let list = json.data;
+							for (let i = 0; i < list.length; i++) {
+								let opt = "<option value='" + list[i].code + "'>" + list[i].name + "</option>>";
+								$("#city-list").append(opt);
+							}
+							if (selectedCityCode) {
+								$("#city-list").val(selectedCityCode);
+							}
+							if (onDone) {
+								onDone();
+							}
+						} else {
+							alert("获取城市数据失败！");
+						}
+					},
+					error: function (xhr) {
+						alert("获取城市数据时产生未知的异常" + getAjaxErrorMessage(xhr));
+					}
+				});
+			}
+
+			function loadAreas(cityCode, selectedAreaCode, onDone) {
+				$("#area-list").empty();
+				$("#area-list").append(defaultOption);
+				if (!cityCode || cityCode == "0") {
+					if (onDone) {
+						onDone();
+					}
+					return;
+				}
+				$.ajax({
+					url: "/districts/",
+					type: "GET",
+					data: "parent=" + cityCode,
+					dataType: "JSON",
+					success: function (json) {
+						if (json.state == 200) {
+							let list = json.data;
+							for (let i = 0; i < list.length; i++) {
+								let opt = "<option value='" + list[i].code + "'>" + list[i].name + "</option>>";
+								$("#area-list").append(opt);
+							}
+							if (selectedAreaCode) {
+								$("#area-list").val(selectedAreaCode);
+							}
+							if (onDone) {
+								onDone();
+							}
+						} else {
+							alert("获取区数据失败！");
+						}
+					},
+					error: function (xhr) {
+						alert("获取区数据时产生未知的异常" + getAjaxErrorMessage(xhr));
+					}
+				});
+			}
+
+			function loadAddressForEdit(aid) {
+				$.ajax({
+					url: "/addresses/" + aid,
+					type: "GET",
+					dataType: "JSON",
+					success: function (json) {
+						if (json.state == 200 && json.data) {
+							const data = json.data;
+							$("#input-aid").val(aid);
+							$("input[name='name']").val(data.name || "");
+							$("input[name='zip']").val(data.zip || "");
+							$("textarea[name='address']").val(data.address || "");
+							$("input[name='phone']").val(data.phone || "");
+							$("input[name='tel']").val(data.tel || "");
+							$("input[name='tag']").val(data.tag || "");
+
+							if (data.provinceCode) {
+								$("#province-list").val(data.provinceCode);
+							}
+							loadCities(data.provinceCode, data.cityCode, function () {
+								loadAreas(data.cityCode, data.areaCode);
+							});
+						} else {
+							alert("加载地址数据失败！" + (json.message ? ("：" + json.message) : ""));
+						}
+					},
+					error: function (xhr) {
+						alert("加载地址数据时产生未知的异常" + getAjaxErrorMessage(xhr));
 					}
 				});
 			}
@@ -421,8 +498,10 @@
 			}
 
 			$("#btn-add-new-address").click(function () {
+				const aid = $("#input-aid").val();
+				const url = aid ? ("/addresses/" + aid + "/update") : "/addresses/add_new_address";
 				$.ajax({
-					url:"/addresses/add_new_address",
+					url:url,
 					type:"POST",
 					data:$("#form-add-new-address").serialize(),
 					dataType:"JSON",

@@ -77,6 +77,29 @@
             aid=#{aid}
     </select>
 
+    <update id="updateByAid">
+        UPDATE
+            t_address
+        SET
+            name=#{name},
+            province_name=#{provinceName},
+            province_code=#{provinceCode},
+            city_name=#{cityName},
+            city_code=#{cityCode},
+            area_name=#{areaName},
+            area_code=#{areaCode},
+            zip=#{zip},
+            address=#{address},
+            phone=#{phone},
+            tel=#{tel},
+            tag=#{tag},
+            modified_user=#{modifiedUser},
+            modified_time=#{modifiedTime}
+        WHERE
+            aid=#{aid}
+            AND uid=#{uid}
+    </update>
+
     <delete id="deleteByAid">
         DELETE FROM
             t_address

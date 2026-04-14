@@ -33,6 +33,21 @@ public class AddressController extends BaseController{
         return new JsonResult<List<Address>>(Ok,addressList);
     }
 
+    @RequestMapping("{aid}")
+    public JsonResult<Address> getByAid(@PathVariable("aid") Integer aid, HttpSession session) {
+        Integer uid = getuidFromSession(session);
+        Address address = addressService.getByAid(aid, uid);
+        return new JsonResult<>(Ok, address);
+    }
+
+    @RequestMapping("{aid}/update")
+    public JsonResult<Void> updateAddress(@PathVariable("aid") Integer aid, Address address, HttpSession session) {
+        Integer uid = getuidFromSession(session);
+        String username = getUsernameFromSession(session);
+        addressService.updateAddress(aid, uid, username, address);
+        return new JsonResult<>(Ok);
+    }
+
     @RequestMapping("{aid}/set_default")
     public JsonResult<Void> setDefaultAddresss(@PathVariable("aid") Integer aid, HttpSession session) {
         Integer uid = getuidFromSession(session);

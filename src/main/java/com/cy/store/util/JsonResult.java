@@ -1,7 +1,5 @@
 package com.cy.store.util;
 
-import jdk.nashorn.internal.ir.ThrowNode;
-
 import java.io.Serializable;
 
 public class JsonResult<E> implements Serializable {

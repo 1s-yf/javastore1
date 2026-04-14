@@ -12,7 +12,7 @@ public class BaseController {
     public static final int Ok = 200;
 
     //方法的返回值給盗前端
-    @ExceptionHandler({ServiceException.class,FileUploadException.class})//用于统一处理项目抛出的异常
+    @ExceptionHandler({Throwable.class})//用于统一处理项目抛出的异常
     public JsonResult<Void> handleException(Throwable e) {
         JsonResult<Void> result = new JsonResult<>(e);
         if (e instanceof UsernameDuplicatedException) {
@@ -51,15 +51,29 @@ public class BaseController {
         } else if (e instanceof ProductNotFoundException) {
             result.setState(4006);
         }
+        if (result.getState() == null) {
+            result.setState(500);
+        }
+        if (result.getMessage() == null || result.getMessage().isEmpty()) {
+            result.setMessage("服务器异常");
+        }
         return  result;
     }
 
 
     protected final Integer getuidFromSession(HttpSession session) {
-        return Integer.valueOf(session.getAttribute("uid").toString());
+        Object uid = session.getAttribute("uid");
+        if (uid == null) {
+            throw new AccessDeniedException("未登录");
+        }
+        return Integer.valueOf(uid.toString());
     }
 
     protected final String getUsernameFromSession(HttpSession session) {
-        return session.getAttribute("username").toString();
+        Object username = session.getAttribute("username");
+        if (username == null) {
+            throw new AccessDeniedException("未登录");
+        }
+        return username.toString();
     }
 }

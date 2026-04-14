@@ -62,6 +62,44 @@ $(function () {
 		$("#login-prompt-modal").modal({ backdrop: 'static', keyboard: false });
 	};
 
+	function bindNoAddressModalHandlers() {
+		$(document).on("click", "#btn-go-add-address", function () {
+			location.href = "addAddress.html";
+		});
+	}
+
+	function ensureNoAddressModal() {
+		if ($("#no-address-modal").length) {
+			return;
+		}
+		var modalHtml = '' +
+			'<div class="modal fade" id="no-address-modal" tabindex="-1" role="dialog" aria-labelledby="noAddressLabel">' +
+				'<div class="modal-dialog" role="document">' +
+					'<div class="modal-content">' +
+						'<div class="modal-header">' +
+							'<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+							'<h4 class="modal-title" id="noAddressLabel">提示</h4>' +
+						'</div>' +
+						'<div class="modal-body">' +
+							'<p id="no-address-text">您还没有收货地址哦……请先添加收货地址后再继续操作~~~</p>' +
+						'</div>' +
+						'<div class="modal-footer">' +
+							'<button type="button" class="btn btn-primary" id="btn-go-add-address">立即添加</button>' +
+							'<button type="button" class="btn btn-default" id="btn-skip-add-address" data-dismiss="modal">暂不添加</button>' +
+						'</div>' +
+					'</div>' +
+				'</div>' +
+			'</div>';
+		$("body").append(modalHtml);
+		bindNoAddressModalHandlers();
+	}
+
+	window.showNoAddressPrompt = function (text) {
+		ensureNoAddressModal();
+		$("#no-address-text").text(text || "您还没有收货地址哦……请先添加收货地址后再继续操作~~~");
+		$("#no-address-modal").modal({ backdrop: 'static', keyboard: false });
+	};
+
 	function isLoggedIn(callback) {
 		$.ajax({
 			url: "/users/status",
@@ -175,6 +213,41 @@ $(function () {
 		e.preventDefault();
 		e.stopPropagation();
 		window.showLoginPrompt("您还没有登录哦……请先登录后再继续操作~~~");
+		return false;
+	});
+
+	$(document).on("click", "a", function (e) {
+		if (!cachedLoggedIn) {
+			return;
+		}
+		var href = $(this).attr("href") || "";
+		if (href.indexOf("address.html") === -1) {
+			return;
+		}
+		if (href.indexOf("addAddress.html") !== -1) {
+			return;
+		}
+		e.preventDefault();
+		e.stopPropagation();
+		$.ajax({
+			url: "/addresses",
+			type: "GET",
+			dataType: "json",
+			success: function (json) {
+				if (json && json.state === 200 && $.isArray(json.data)) {
+					if (json.data.length === 0) {
+						window.showNoAddressPrompt("您还没有收货地址哦……请先添加收货地址后再继续操作~~~");
+						return;
+					}
+					location.href = "address.html";
+					return;
+				}
+				location.href = "address.html";
+			},
+			error: function () {
+				location.href = "address.html";
+			}
+		});
 		return false;
 	});
 

@@ -1,6 +1,7 @@
 package com.cy.store.mapper;
 
 import com.cy.store.entity.Address;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
@@ -43,7 +44,9 @@ public interface AddressMapper {
      * @param modifiedTime 修改时间
      * @return 受影响的行数
      */
-    Integer updateDefaultByAid(Integer aid, String modifiedUser, Date modifiedTime);
+    Integer updateDefaultByAid(@Param("aid") Integer aid,
+                               @Param("modifiedUser") String modifiedUser,
+                               @Param("modifiedTime") Date modifiedTime);
 
     /**
      * 根据收货地址的aid值，查询收货地址详情
@@ -51,6 +54,8 @@ public interface AddressMapper {
      * @return 匹配的收货地址详情，如果没有匹配的数据则返回null
      */
     Address findByAid(Integer aid);
+
+    Integer updateByAid(Address address);
 
     /**
      * 根据收货地址删除数据

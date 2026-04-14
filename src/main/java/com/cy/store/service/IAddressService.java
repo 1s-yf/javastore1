@@ -15,6 +15,10 @@ public interface IAddressService {
 
     List<Address> getByUid(Integer uid);
 
+    Address getByAid(Integer aid, Integer uid);
+
+    void updateAddress(Integer aid, Integer uid, String username, Address address);
+
     /**
      * 设置默认收货地址
      * @param aid 收货地址id

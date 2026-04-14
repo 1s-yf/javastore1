@@ -42,6 +42,36 @@ $(function() {
 		})
 		//开始时计算价格
 		//calcTotal();
+
+	$(document).on("submit", "form[action='orderConfirm.html']", function(e) {
+		var form = this;
+		e.preventDefault();
+		$.ajax({
+			url: "/addresses",
+			type: "GET",
+			dataType: "json",
+			success: function(json) {
+				if (json && json.state === 200 && $.isArray(json.data)) {
+					if (json.data.length === 0) {
+						if (window.showNoAddressPrompt) {
+							window.showNoAddressPrompt("您还没有收货地址哦……请先添加收货地址后再继续操作~~~");
+						}
+						return;
+					}
+					form.submit();
+					return;
+				}
+				form.submit();
+			},
+			error: function() {
+				if (window.showLoginPrompt) {
+					window.showLoginPrompt("您还没有登录哦……请先登录后再继续操作~~~");
+					return;
+				}
+				form.submit();
+			}
+		});
+	});
 })
 //计算单行小计价格的方法
 function calcRow(rid) {

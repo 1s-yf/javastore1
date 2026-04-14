@@ -30,7 +30,6 @@ public class AddressServiceImpl implements IAddressService {
         if (count > maxAddressNumber) {
             throw new AddressCountLimitException("收货地址数量达到上限(" + maxAddressNumber +")");
         }
-
         //补全数据
         address.setUid(uid);
         Integer isDefault = count == 0 ? 1 : 0;
@@ -52,6 +51,50 @@ public class AddressServiceImpl implements IAddressService {
             throw new InsertException("插入收货地址数据时出现未知错误，请联系系统管理员");
         }
 
+    }
+
+    @Override
+    public Address getByAid(Integer aid, Integer uid) {
+        Address address = addressMapper.findByAid(aid);
+        if (address == null) {
+            throw new AddressNotFoundException("尝试访问的地址不存在");
+        }
+        if (!uid.equals(address.getUid())) {
+            throw new AccessDeniedException("非法访问异常");
+        }
+        address.setUid(null);
+        address.setCreatedUser(null);
+        address.setCreatedTime(null);
+        address.setModifiedUser(null);
+        address.setModifiedTime(null);
+        return address;
+    }
+
+    @Override
+    public void updateAddress(Integer aid, Integer uid, String username, Address address) {
+        Address old = addressMapper.findByAid(aid);
+        if (old == null) {
+            throw new AddressNotFoundException("尝试访问的收货地址数据不存在");
+        }
+        if (!uid.equals(old.getUid())) {
+            throw new AccessDeniedException("非法访问");
+        }
+
+        address.setAid(aid);
+        address.setUid(uid);
+        String provinceName = iDistrictService.getNameByCode(address.getProvinceCode());
+        String cityName = iDistrictService.getNameByCode(address.getCityCode());
+        String areaName = iDistrictService.getNameByCode(address.getAreaCode());
+        address.setProvinceName(provinceName);
+        address.setCityName(cityName);
+        address.setAreaName(areaName);
+        address.setModifiedUser(username);
+        address.setModifiedTime(new Date());
+
+        Integer rows = addressMapper.updateByAid(address);
+        if (rows != 1) {
+            throw new UpdateException("更新收货地址数据时出现未知错误");
+        }
     }
 
     @Override
@@ -78,7 +121,7 @@ public class AddressServiceImpl implements IAddressService {
             throw new AddressNotFoundException("尝试访问的地址不存在");
         }
 
-        if (address.getUid() != uid) {
+        if (!uid.equals(address.getUid())) {
             throw new AccessDeniedException("非法访问异常");
         }
 
@@ -101,7 +144,7 @@ public class AddressServiceImpl implements IAddressService {
             throw new AddressNotFoundException("尝试访问的收货地址数据不存在");
         }
 
-        if (uid != result.getUid()) {
+        if (!uid.equals(result.getUid())) {
             throw new AccessDeniedException("非法访问");
         }
 

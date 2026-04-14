@@ -52,7 +52,8 @@ public class UserController extends BaseController{
     @RequestMapping("status")
     public JsonResult<Boolean> status(HttpSession session) {
         Object uid = session.getAttribute("uid");
-        boolean loggedIn = uid != null;
+        Object username = session.getAttribute("username");
+        boolean loggedIn = uid != null && username != null;
         return new JsonResult<>(Ok, loggedIn);
     }
 
