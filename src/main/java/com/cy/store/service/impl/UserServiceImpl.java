@@ -8,13 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.Locale;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 @Service
 public class UserServiceImpl implements IUserService {
+    private static final Pattern PASSWORD_PATTERN =
+            Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d]).{8,}$");
 
     @Autowired
     private UserMapper userMapper;
@@ -31,6 +32,7 @@ public class UserServiceImpl implements IUserService {
 
         //获取盐值
         String oldPassword = user.getPassword();
+        validatePasswordFormat(oldPassword);
         String salt = UUID.randomUUID().toString().toUpperCase();
         String md5Password = getMD5Password(oldPassword, salt);
         user.setPassword(md5Password);
@@ -102,6 +104,7 @@ public class UserServiceImpl implements IUserService {
             throw new PasswordNotMatchException();
         }
 
+        validatePasswordFormat(newPassword);
         String newMD5Password = getMD5Password(newPassword, result.getSalt());
         //返回的影响的行数，修改密码应该只返回1
         Integer rows =  userMapper.updatePasswordByUid(uid,newMD5Password,username,new Date());
@@ -152,5 +155,11 @@ public class UserServiceImpl implements IUserService {
             throw new UpdateException("更新用户头像产生未知异常");
         }
 
+    }
+
+    private void validatePasswordFormat(String password) {
+        if (password == null || !PASSWORD_PATTERN.matcher(password).matches()) {
+            throw new PasswordFormatException("密码不符合规范");
+        }
     }
 }
