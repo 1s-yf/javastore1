@@ -24,6 +24,9 @@ public class BaseController {
         } else if (e instanceof PasswordNotMatchException) {
             result.setState(5002);
             result.setMessage("用户密码错误");
+        } else if (e instanceof PasswordFormatException) {
+            result.setState(5003);
+            result.setMessage("密码不符合规范：长度至少8位，且需包含大写字母、小写字母、数字和特殊字符");
         } else if (e instanceof InsertException) {
             result.setState(5000);
             result.setMessage("注册时产生未知的异常");
