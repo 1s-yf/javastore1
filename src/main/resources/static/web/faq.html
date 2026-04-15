@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>常见问题 - 电脑商城</title>
+    <link href="../bootstrap3/css/bootstrap.css" rel="stylesheet">
+    <link href="../bootstrap3/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../css/top.css" />
+    <link rel="stylesheet" type="text/css" href="../css/footer.css" />
+    <style>
+        .footer .callus ul,
+        .footer .callus ul li {
+            list-style: none !important;
+            padding-left: 0 !important;
+            margin: 0 !important;
+        }
+    </style>
+    <style>
+        body {
+            background: #f5f5f5;
+        }
+        .faq-content {
+            min-height: 500px;
+            padding: 40px 0;
+        }
+        .faq-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            padding: 40px;
+        }
+        .faq-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .faq-title h1 {
+            color: #5bc0de;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .faq-title p {
+            color: #999;
+            font-size: 14px;
+        }
+        .faq-item {
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+        .faq-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .faq-question {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .faq-question .q-num {
+            background: #5bc0de;
+            color: white;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        .faq-question i {
+            color: #5bc0de;
+            margin-left: auto;
+            transition: 0.3s;
+        }
+        .faq-question .fa-angle-down {
+            transform: rotate(0deg);
+        }
+        .faq-question .fa-angle-down.rotated {
+            transform: rotate(180deg);
+        }
+        .faq-answer {
+            padding-left: 38px;
+            color: #666;
+            line-height: 1.8;
+            font-size: 14px;
+            display: none;
+        }
+        .faq-answer.show {
+            display: block;
+        }
+        .btn-back {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .btn-back a {
+            background: #5bc0de;
+            color: white;
+            padding: 10px 30px;
+            border-radius: 4px;
+            display: inline-block;
+            text-decoration: none;
+        }
+        .btn-back a:hover {
+            background: #31b0d5;
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <img src="../images/index/stumalllogo.png" alt="" style="height: 45px; width: auto;" />
+    <span class="pull-right"><small>欢迎访问</small><b>电脑商城</b></span>
+</header>
+
+<div class="container faq-content">
+    <div class="faq-container">
+        <div class="faq-title">
+            <h1><i class="fa fa-question-circle"></i> 常见问题</h1>
+            <p>您的问题，我们来解答</p>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleAnswer(this)">
+                <span class="q-num">1</span> 如何查看已有订单？
+                <i class="fa fa-angle-down"></i>
+            </div>
+            <div class="faq-answer">
+                登录电脑商城后，点击页面右上角的“我的订单”或进入“个人中心” → “我的订单”，即可查看所有历史订单，包括订单状态、物流信息等。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleAnswer(this)">
+                <span class="q-num">2</span> 如何修改用户名/密码？
+                <i class="fa fa-angle-down"></i>
+            </div>
+            <div class="faq-answer">
+                登录后进入“个人中心”，点击“账户安全”或“修改密码”，输入原密码和新密码即可完成修改。用户名暂不支持修改，如需更换请联系客服。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleAnswer(this)">
+                <span class="q-num">3</span> 下单后多久发货？
+                <i class="fa fa-angle-down"></i>
+            </div>
+            <div class="faq-answer">
+                一般情况下，订单支付成功后将在24-48小时内发货。预售商品以商品页面标注的发货时间为准。节假日可能会有延迟，敬请谅解。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleAnswer(this)">
+                <span class="q-num">4</span> 支持哪些支付方式？
+                <i class="fa fa-angle-down"></i>
+            </div>
+            <div class="faq-answer">
+                目前支持微信支付、支付宝、银行卡快捷支付。所有支付方式均通过安全加密通道进行，保障您的资金安全。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleAnswer(this)">
+                <span class="q-num">5</span> 如何申请退货退款？
+                <i class="fa fa-angle-down"></i>
+            </div>
+            <div class="faq-answer">
+                在“我的订单”中找到需要退货的商品，点击“申请售后”，选择退货原因并提交。客服审核通过后，请按照提示寄回商品，我们收到后会尽快为您办理退款。
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleAnswer(this)">
+                <span class="q-num">6</span> 忘记密码怎么办？
+                <i class="fa fa-angle-down"></i>
+            </div>
+            <div class="faq-answer">
+                在登录页面点击“忘记密码”，通过绑定的手机号或邮箱验证后，即可重置新密码。如无法找回，请联系客服协助处理。
+            </div>
+        </div>
+
+        <div class="btn-back">
+            <a href="index.html"><i class="fa fa-home"></i> 返回首页</a>
+        </div>
+    </div>
+</div>
+
+<!-- 页脚 - 与主页完全一致 -->
+<footer class="footer">
+    <!-- 品质保障，私人定制等-->
+    <div class="text-center rights container">
+        <div class="col-md-offset-2 col-md-2">
+            <span class="fa fa-thumbs-o-up"></span>
+            <p>品质保障</p>
+        </div>
+        <div class="col-md-2">
+            <span class="fa fa-address-card-o"></span>
+            <p>私人订制</p>
+        </div>
+        <div class="col-md-2">
+            <span class="fa fa-graduation-cap"></span>
+            <p>学生特供</p>
+        </div>
+        <div class="col-md-2">
+            <span class="fa fa-bitcoin"></span>
+            <p>专属特权</p>
+        </div>
+    </div>
+    <!--联系我们、下载客户端等-->
+    <div class="container beforeBottom">
+        <div class="col-md-offset-1 col-md-3">
+            <div><img src="../images/index/school.png" alt="" style="height: 100px; width: auto;" class="footLogo" /></div>
+        </div>
+        <div class="col-md-4 callus text-center">
+            <div class="col-md-4">
+                <ul>
+                    <li><a href="#"><p>买家帮助</p></a></li>
+                    <li><a href="#">新手指南</a></li>
+                    <li><a href="#">服务保障</a></li>
+                    <li><a href="web/faq.html"><p>常见问题</p></a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <ul>
+                    <li><a href="#"><p>商家帮助</p></a></li>
+                    <li><a href="#">商家入驻</a></li>
+                    <li><a href="#">商家后台</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <ul>
+                    <li><a href="about.html"><p>关于我们</p></a></li>
+                    <li><a href="javascript:void(0);" onclick="alert('关于圆心 - 演示版');">关于圆心</a></li>
+                    <li><a href="javascript:void(0);" onclick="alert('联系我们 - 演示版');">联系我们</a></li>
+                    <li><a href="javascript:void(0);" onclick="alert('隐私政策 - 演示版');">隐私政策</a></li>
+                    <li><a href="javascript:void(0);" onclick="alert('服务条款 - 演示版');">服务条款</a></li>
+                    <li>
+                        <span class="fa fa-wechat"></span>
+                        <span class="fa fa-weibo"></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="col-md-5">
+
+            </div>
+            <div class="col-md-6">
+                <!-- 已删除二维码-->
+            </div>
+        </div>
+    </div>
+    <!-- 页面底部-备案号 #footer -->
+    <div class="col-md-12 text-center bottom">
+        合肥工业大学宣城校区2023级信息安全 软件工程项目作业<a target="_blank" style="font-size: 12px" href="http://www.dnsc.cn/"></a>
+    </div>
+</footer>
+<!--页脚结束-->
+
+<script src="../bootstrap3/jquery-1.9.1.min.js"></script>
+<script src="../bootstrap3/js/bootstrap.js"></script>
+<script>
+    function toggleAnswer(element) {
+        var answer = element.nextElementSibling;
+        var icon = element.querySelector('.fa-angle-down');
+        answer.classList.toggle('show');
+        if (icon) {
+            icon.classList.toggle('rotated');
+        }
+    }
+</script>
+</body>
+</html>
