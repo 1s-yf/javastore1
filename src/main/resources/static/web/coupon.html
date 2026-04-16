@@ -16,6 +16,19 @@
 		<link rel="stylesheet" type="text/css" href="../css/layout.css" />
 		<link rel="stylesheet" type="text/css" href="../css/top.css" />
 		<link rel="stylesheet" type="text/css" href="../css/footer.css" />
+		<style>
+			html, body {
+				height: 100%;
+			}
+			body {
+				min-height: 100vh;
+				display: flex;
+				flex-direction: column;
+			}
+			.footer {
+				margin-top: auto;
+			}
+		</style>
 	</head>
 
 	<body>
@@ -24,11 +37,25 @@
 				<div class="col-md-3"><a href="index.html"><img src="../images/index/stumalllogo.png" /></a></div>
 				<div class="col-md-9 top-item">
 					<ul class="list-inline pull-right">
-						<li><a href="favorites.html"><span class="fa fa-heart"></span>&nbsp;收藏</a></li>
+						<li><a id="link-favorites" href="favorites.html"><span class="fa fa-heart"></span>&nbsp;收藏</a></li>
 						<li class="li-split">|</li>
-						<li><a href="orders.html"><span class="fa fa-file-text"></span>&nbsp;订单</a></li>
+						<li><a id="link-orders" href="orders.html"><span class="fa fa-file-text"></span>&nbsp;订单</a></li>
 						<li class="li-split">|</li>
-						<li><a href="cart.html"><span class="fa fa-cart-plus"></span>&nbsp;购物车</a></li>
+						<li><a id="link-cart" href="cart.html"><span class="fa fa-cart-plus"></span>&nbsp;购物车</a></li>
+						<li class="li-split">|</li>
+						<li>
+							<div class="btn-group">
+								<button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown">
+									<span id="top-dropdown-btn"><span class="fa fa-gears"></span>&nbsp;<span id="top-center-text">个人中心</span> <span class="caret"></span></span>
+								</button>
+								<ul class="dropdown-menu top-dropdown-ul" role="menu">
+									<li><a href="password.html">修改密码</a></li>
+									<li><a href="userdata.html">个人资料</a></li>
+									<li><a href="upload.html">上传头像</a></li>
+									<li><a href="address.html">收货管理	</a></li>
+								</ul>
+							</div>
+						</li>
 						<li class="li-split">|</li>
 						<li><a id="link-login-logout" href="login.html"><span class="fa fa-user"></span>&nbsp;<span id="top-login-text">登录</span></a></li>
 					</ul>
@@ -60,27 +87,15 @@
 			<div class="col-md-offset-1 col-md-10"><b>我的优惠券</b></div>
 			<div class="col-md-offset-1 col-md-10" style="margin-top:15px;">
 				<ul class="nav nav-tabs">
-					<li class="active"><a href="#">待领取</a></li>
-					<li><a href="#">已使用</a></li>
-					<li><a href="#">已过期</a></li>
+					<li class="active"><a href="#" data-coupon-tab="pending">待领取</a></li>
+					<li><a href="#" data-coupon-tab="unused">待使用</a></li>
+					<li><a href="#" data-coupon-tab="used">已使用</a></li>
+					<li><a href="#" data-coupon-tab="expired">已过期</a></li>
 				</ul>
 			</div>
 
 			<div class="col-md-offset-1 col-md-10" style="padding-top:20px;">
-				<div class="panel panel-default">
-					<div class="panel-body">
-						<p><b>满200减20</b>（全场通用）</p>
-						<p><small>有效期：2026-04-16 至 2026-04-30</small></p>
-						<button class="btn btn-danger btn-sm">立即领取</button>
-					</div>
-				</div>
-				<div class="panel panel-default">
-					<div class="panel-body">
-						<p><b>满500减80</b>（VIP专享）</p>
-						<p><small>有效期：2026-04-16 至 2026-05-10</small></p>
-						<button class="btn btn-danger btn-sm">立即领取</button>
-					</div>
-				</div>
+				<div id="coupon-list"></div>
 
 				<!-- 需要空态时，保留这一行并删掉上面两个券 -->
 				<!-- <p class="text-muted">暂无优惠券</p> -->
@@ -89,14 +104,281 @@
 
 		<div class="clearfix"></div>
 		<footer class="footer">
+			<!-- 品质保障，私人定制等-->
 			<div class="text-center rights container">
-				<div class="col-md-offset-2 col-md-2"><span class="fa fa-thumbs-o-up"></span><p>品质保障</p></div>
-				<div class="col-md-2"><span class="fa fa-address-card-o"></span><p>私人订制</p></div>
-				<div class="col-md-2"><span class="fa fa-graduation-cap"></span><p>学生特供</p></div>
-				<div class="col-md-2"><span class="fa fa-bitcoin"></span><p>专属特权</p></div>
+				<div class="col-md-offset-2 col-md-2">
+					<span class="fa fa-thumbs-o-up"></span>
+					<p>品质保障</p>
+				</div>
+				<div class="col-md-2">
+					<span class="fa fa-address-card-o"></span>
+					<p>私人订制</p>
+				</div>
+				<div class="col-md-2">
+					<span class="fa fa-graduation-cap"></span>
+					<p>学生特供</p>
+				</div>
+				<div class="col-md-2">
+					<span class="fa fa-bitcoin"></span>
+					<p>专属特权</p>
+				</div>
 			</div>
-			<div class="col-md-12 text-center bottom">合肥工业大学宣城校区2023级信息安全 软件工程项目作业</div>
+			<!--联系我们、下载客户端等-->
+			<div class="container beforeBottom">
+				<div class="col-md-offset-1 col-md-3">
+					<div><img src="../images/index/school.png" alt="" style="height: 100px; width: auto;" class="footLogo" /></div>
+				</div>
+				<div class="col-md-4 callus text-center">
+					<div class="col-md-4">
+						<ul>
+							<li>
+								<a href="#">
+									<p>买家帮助</p>
+								</a>
+							</li>
+							<li><a href="#">新手指南</a></li>
+							<li><a href="#">服务保障</a></li>
+							<li><a href="faq.html"><p>常见问题</p></a></li>
+						</ul>
+					</div>
+					<div class="col-md-4">
+						<ul>
+							<li>
+								<a href="#">
+									<p>商家帮助</p>
+								</a>
+							</li>
+							<li><a href="#">商家入驻</a></li>
+							<li><a href="#">商家后台</a></li>
+						</ul>
+					</div>
+					<div class="col-md-4">
+						<ul>
+							<li><a href="../about.html"><p>关于我们</p></a></li>
+							<li><a href="#">联系我们</a></li>
+							<li><a href="javascript:void(0);" onclick="alert('隐私政策 - 演示版');">隐私政策</a></li>
+							<li><a href="javascript:void(0);" onclick="alert('服务条款 - 演示版');">服务条款</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- 页面底部-备案号 #footer -->
+			<div class="col-md-12 text-center bottom">
+				合肥工业大学宣城校区2023级信息安全 软件工程项目作业<a target="_blank" href="http://www.dnsc.cn/"></a>
+			</div>
 		</footer>
+		<script type="text/javascript">
+			(function () {
+				var STORAGE_KEY = "coupon_claims_v1";
+				var VIP_KEY_PREFIX = "vip_user_v1:";
+				var currentUsername = null;
+
+				function getClaimsStorageKey() {
+					return STORAGE_KEY + ":" + (currentUsername || "anonymous");
+				}
+
+				function safeParseJSON(text, fallback) {
+					try {
+						return JSON.parse(text);
+					} catch (e) {
+						return fallback;
+					}
+				}
+
+				function loadClaims() {
+					return safeParseJSON(localStorage.getItem(getClaimsStorageKey()) || "{}", {});
+				}
+
+				function saveClaims(data) {
+					localStorage.setItem(getClaimsStorageKey(), JSON.stringify(data || {}));
+				}
+
+				function parseDateEndOfDay(yyyyMmDd) {
+					return new Date(yyyyMmDd + "T23:59:59");
+				}
+
+				var coupons = [
+					{
+						id: "c200-20",
+						title: "满200减20",
+						subTitle: "全场通用",
+						start: "2026-04-16",
+						end: "2026-04-30",
+						vipOnly: false
+					},
+					{
+						id: "c500-80",
+						title: "满500减80",
+						subTitle: "VIP专享",
+						start: "2026-04-16",
+						end: "2026-05-10",
+						vipOnly: true
+					}
+				];
+
+				function findCouponById(id) {
+					for (var i = 0; i < coupons.length; i++) {
+						if (coupons[i].id === id) {
+							return coupons[i];
+						}
+					}
+					return null;
+				}
+
+				function getCurrentUsername(callback) {
+					$.ajax({
+						url: "/users/get_by_uid",
+						type: "GET",
+						dataType: "json",
+						success: function (json) {
+							if (json && json.state === 200 && json.data && json.data.username) {
+								callback(json.data.username);
+								return;
+							}
+							callback(null);
+						},
+						error: function () {
+							callback(null);
+						}
+					});
+				}
+
+				function isVipUser(username) {
+					if (!username) {
+						return false;
+					}
+					return localStorage.getItem(VIP_KEY_PREFIX + username) === "1";
+				}
+
+				function ensureVipFailModal() {
+					if ($("#vip-fail-modal").length) {
+						return;
+					}
+					var html = ''
+						+ '<div class="modal fade" id="vip-fail-modal" tabindex="-1" role="dialog" aria-hidden="true">'
+						+ '  <div class="modal-dialog modal-sm" role="document">'
+						+ '    <div class="modal-content">'
+						+ '      <div class="modal-header">'
+						+ '        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+						+ '        <h4 class="modal-title">提示</h4>'
+						+ '      </div>'
+						+ '      <div class="modal-body">'
+						+ '        <p id="vip-fail-text">领取失败，您不是VIP用户哦</p>'
+						+ '      </div>'
+						+ '      <div class="modal-footer">'
+						+ '        <button type="button" class="btn btn-primary" id="btn-go-upgrade-vip">立即升级VIP</button>'
+						+ '        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>'
+						+ '      </div>'
+						+ '    </div>'
+						+ '  </div>'
+						+ '</div>';
+					$("body").append(html);
+				}
+
+				function showVipFailModal() {
+					ensureVipFailModal();
+					$("#vip-fail-modal").modal({ backdrop: 'static', keyboard: false });
+				}
+
+				function getCouponDisplayStatus(coupon, claims) {
+					var claim = claims[coupon.id];
+					var expired = new Date() > parseDateEndOfDay(coupon.end);
+					if (claim && claim.status === "used") {
+						return "used";
+					}
+					if (expired) {
+						return "expired";
+					}
+					if (claim && claim.status === "unused") {
+						return "unused";
+					}
+					return "pending";
+				}
+
+				function renderList(tab) {
+					var claims = loadClaims();
+					var html = "";
+					for (var i = 0; i < coupons.length; i++) {
+						var c = coupons[i];
+						var status = getCouponDisplayStatus(c, claims);
+						if (status !== tab) {
+							continue;
+						}
+						var btn = "";
+						if (status === "pending") {
+							btn = '<button class="btn btn-danger btn-sm" data-coupon-action="claim" data-coupon-id="' + c.id + '">立即领取</button>';
+						} else if (status === "unused") {
+							btn = '<button class="btn btn-danger btn-sm" data-coupon-action="use" data-coupon-id="' + c.id + '">立即使用</button>';
+						} else if (status === "used") {
+							btn = '<button class="btn btn-default btn-sm" disabled="disabled">已使用</button>';
+						} else if (status === "expired") {
+							btn = '<button class="btn btn-default btn-sm" disabled="disabled">已过期</button>';
+						}
+						html += ''
+							+ '<div class="panel panel-default">'
+							+ '  <div class="panel-body">'
+							+ '    <p><b>' + c.title + '</b>（' + c.subTitle + '）</p>'
+							+ '    <p><small>有效期：' + c.start + ' 至 ' + c.end + '</small></p>'
+							+ '    ' + btn
+							+ '  </div>'
+							+ '</div>';
+					}
+					if (!html) {
+						html = '<p class="text-muted">暂无优惠券</p>';
+					}
+					$("#coupon-list").html(html);
+				}
+
+				function setActiveTab(tab) {
+					$(".nav.nav-tabs li").removeClass("active");
+					$(".nav.nav-tabs a[data-coupon-tab='" + tab + "']").closest("li").addClass("active");
+					$(".nav.nav-tabs").data("activeTab", tab);
+					renderList(tab);
+				}
+
+				$(document).on("click", ".nav.nav-tabs a[data-coupon-tab]", function (e) {
+					e.preventDefault();
+					setActiveTab($(this).data("couponTab"));
+				});
+
+				$(document).on("click", "button[data-coupon-action='claim']", function () {
+					var id = $(this).data("couponId");
+					var coupon = findCouponById(id);
+					if (!coupon) {
+						return;
+					}
+					getCurrentUsername(function (username) {
+						currentUsername = username;
+						if (coupon.vipOnly && !isVipUser(username)) {
+							showVipFailModal();
+							return;
+						}
+						var claims = loadClaims();
+						if (!claims[id]) {
+							claims[id] = { status: "unused", claimedAt: new Date().toISOString() };
+							saveClaims(claims);
+						}
+						alert("领取成功，请在有效期内使用哦");
+						setActiveTab("unused");
+					});
+				});
+
+				$(document).on("click", "button[data-coupon-action='use']", function () {
+					location.href = "index.html";
+				});
+
+				$(document).on("click", "#btn-go-upgrade-vip", function () {
+					location.href = "vip.html?upgrade=1&redirect=coupon.html";
+				});
+
+				$(function () {
+					getCurrentUsername(function (username) {
+						currentUsername = username;
+						setActiveTab("pending");
+					});
+				});
+			})();
+		</script>
 	</body>
 
 </html>

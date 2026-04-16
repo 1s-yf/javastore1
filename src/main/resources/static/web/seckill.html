@@ -17,6 +17,19 @@
 		<link rel="stylesheet" type="text/css" href="../css/top.css" />
 		<link rel="stylesheet" type="text/css" href="../css/footer.css" />
 		<link rel="stylesheet" type="text/css" href="../css/search.css" />
+		<style>
+			html, body {
+				height: 100%;
+			}
+			body {
+				min-height: 100vh;
+				display: flex;
+				flex-direction: column;
+			}
+			.footer {
+				margin-top: auto;
+			}
+		</style>
 	</head>
 
 	<body>
@@ -27,11 +40,11 @@
 				</div>
 				<div class="col-md-9 top-item">
 					<ul class="list-inline pull-right">
-						<li><a href="favorites.html"><span class="fa fa-heart"></span>&nbsp;收藏</a></li>
+						<li><a id="link-favorites" href="favorites.html"><span class="fa fa-heart"></span>&nbsp;收藏</a></li>
 						<li class="li-split">|</li>
-						<li><a href="orders.html"><span class="fa fa-file-text"></span>&nbsp;订单</a></li>
+						<li><a id="link-orders" href="orders.html"><span class="fa fa-file-text"></span>&nbsp;订单</a></li>
 						<li class="li-split">|</li>
-						<li><a href="cart.html"><span class="fa fa-cart-plus"></span>&nbsp;购物车</a></li>
+						<li><a id="link-cart" href="cart.html"><span class="fa fa-cart-plus"></span>&nbsp;购物车</a></li>
 						<li class="li-split">|</li>
 						<li>
 							<div class="btn-group">
@@ -83,7 +96,7 @@
 					<div class="goods-panel">
 						<img src="../images/portal/12(DELL)XPS13gold/collect.png" class="img-responsive" />
 						<p>¥4599.00</p>
-						<p class="text-row-3"><a href="product.html"><small>戴尔 XPS13 轻薄本</small></a></p>
+						<p class="text-row-3"><a href="product.html?id=10000014&from=seckill&sp=4599.00"><small>戴尔 XPS13 轻薄本</small></a></p>
 						<p style="color:#d9534f;"><small>8折限时秒杀</small></p>
 					</div>
 				</div>
@@ -91,7 +104,7 @@
 					<div class="goods-panel">
 						<img src="../images/portal/13LenovoIdeaPad310_black/collect.png" class="img-responsive" />
 						<p>¥3999.00</p>
-						<p class="text-row-3"><a href="product.html"><small>联想 IdeaPad 310</small></a></p>
+						<p class="text-row-3"><a href="product.html?id=10000020&from=seckill&sp=3999.00"><small>联想 IdeaPad 310</small></a></p>
 						<p style="color:#d9534f;"><small>8折限时秒杀</small></p>
 					</div>
 				</div>
@@ -99,7 +112,7 @@
 					<div class="goods-panel">
 						<img src="../images/portal/20DellXPS15-9550/collect.png" class="img-responsive" />
 						<p>¥6999.00</p>
-						<p class="text-row-3"><a href="product.html"><small>Dell XPS15 性能本</small></a></p>
+						<p class="text-row-3"><a href="product.html?id=10000041&from=seckill&sp=6999.00"><small>Dell XPS15 性能本</small></a></p>
 						<p style="color:#d9534f;"><small>8折限时秒杀</small></p>
 					</div>
 				</div>
@@ -108,13 +121,68 @@
 
 		<div class="clearfix"></div>
 		<footer class="footer">
+			<!-- 品质保障，私人定制等-->
 			<div class="text-center rights container">
-				<div class="col-md-offset-2 col-md-2"><span class="fa fa-thumbs-o-up"></span><p>品质保障</p></div>
-				<div class="col-md-2"><span class="fa fa-address-card-o"></span><p>私人订制</p></div>
-				<div class="col-md-2"><span class="fa fa-graduation-cap"></span><p>学生特供</p></div>
-				<div class="col-md-2"><span class="fa fa-bitcoin"></span><p>专属特权</p></div>
+				<div class="col-md-offset-2 col-md-2">
+					<span class="fa fa-thumbs-o-up"></span>
+					<p>品质保障</p>
+				</div>
+				<div class="col-md-2">
+					<span class="fa fa-address-card-o"></span>
+					<p>私人订制</p>
+				</div>
+				<div class="col-md-2">
+					<span class="fa fa-graduation-cap"></span>
+					<p>学生特供</p>
+				</div>
+				<div class="col-md-2">
+					<span class="fa fa-bitcoin"></span>
+					<p>专属特权</p>
+				</div>
 			</div>
-			<div class="col-md-12 text-center bottom">合肥工业大学宣城校区2023级信息安全 软件工程项目作业</div>
+			<!--联系我们、下载客户端等-->
+			<div class="container beforeBottom">
+				<div class="col-md-offset-1 col-md-3">
+					<div><img src="../images/index/school.png" alt="" style="height: 100px; width: auto;" class="footLogo" /></div>
+				</div>
+				<div class="col-md-4 callus text-center">
+					<div class="col-md-4">
+						<ul>
+							<li>
+								<a href="#">
+									<p>买家帮助</p>
+								</a>
+							</li>
+							<li><a href="#">新手指南</a></li>
+							<li><a href="#">服务保障</a></li>
+							<li><a href="faq.html"><p>常见问题</p></a></li>
+						</ul>
+					</div>
+					<div class="col-md-4">
+						<ul>
+							<li>
+								<a href="#">
+									<p>商家帮助</p>
+								</a>
+							</li>
+							<li><a href="#">商家入驻</a></li>
+							<li><a href="#">商家后台</a></li>
+						</ul>
+					</div>
+					<div class="col-md-4">
+						<ul>
+							<li><a href="../about.html"><p>关于我们</p></a></li>
+							<li><a href="#">联系我们</a></li>
+							<li><a href="javascript:void(0);" onclick="alert('隐私政策 - 演示版');">隐私政策</a></li>
+							<li><a href="javascript:void(0);" onclick="alert('服务条款 - 演示版');">服务条款</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- 页面底部-备案号 #footer -->
+			<div class="col-md-12 text-center bottom">
+				合肥工业大学宣城校区2023级信息安全 软件工程项目作业<a target="_blank" href="http://www.dnsc.cn/"></a>
+			</div>
 		</footer>
 	</body>
 

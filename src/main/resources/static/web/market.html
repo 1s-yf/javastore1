@@ -16,11 +16,49 @@
 		<link rel="stylesheet" type="text/css" href="../css/top.css" />
 		<link rel="stylesheet" type="text/css" href="../css/footer.css" />
 		<link rel="stylesheet" type="text/css" href="../css/search.css" />
+		<style>
+			html, body {
+				height: 100%;
+			}
+			body {
+				min-height: 100vh;
+				display: flex;
+				flex-direction: column;
+			}
+			.footer {
+				margin-top: auto;
+			}
+		</style>
 	</head>
 	<body>
 		<header class="header">
 			<div class="row">
 				<div class="col-md-3"><a href="index.html"><img src="../images/index/stumalllogo.png" /></a></div>
+				<div class="col-md-9 top-item">
+					<ul class="list-inline pull-right">
+						<li><a id="link-favorites" href="favorites.html"><span class="fa fa-heart"></span>&nbsp;收藏</a></li>
+						<li class="li-split">|</li>
+						<li><a id="link-orders" href="orders.html"><span class="fa fa-file-text"></span>&nbsp;订单</a></li>
+						<li class="li-split">|</li>
+						<li><a id="link-cart" href="cart.html"><span class="fa fa-cart-plus"></span>&nbsp;购物车</a></li>
+						<li class="li-split">|</li>
+						<li>
+							<div class="btn-group">
+								<button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown">
+									<span id="top-dropdown-btn"><span class="fa fa-gears"></span>&nbsp;<span id="top-center-text">个人中心</span> <span class="caret"></span></span>
+								</button>
+								<ul class="dropdown-menu top-dropdown-ul" role="menu">
+									<li><a href="password.html">修改密码</a></li>
+									<li><a href="userdata.html">个人资料</a></li>
+									<li><a href="upload.html">上传头像</a></li>
+									<li><a href="address.html">收货管理	</a></li>
+								</ul>
+							</div>
+						</li>
+						<li class="li-split">|</li>
+						<li><a id="link-login-logout" href="login.html"><span class="fa fa-user"></span>&nbsp;<span id="top-login-text">登录</span></a></li>
+					</ul>
+				</div>
 			</div>
 		</header>
 
@@ -45,21 +83,21 @@
 					<div class="goods-panel">
 						<img src="../images/portal/02COMIXC5902A5122blue/collect.png" class="img-responsive" />
 						<p>¥9.90</p>
-						<p class="text-row-3"><a href="product.html"><small>A5商务笔记本</small></a></p>
+						<p class="text-row-3"><a href="product.html?id=10000013"><small>A5商务笔记本</small></a></p>
 					</div>
 				</div>
 				<div class="col-md-3">
 					<div class="goods-panel">
 						<img src="../images/portal/002calculator1548A/collect.png" class="img-responsive" />
 						<p>¥12.80</p>
-						<p class="text-row-3"><a href="product.html"><small>中性笔套装</small></a></p>
+						<p class="text-row-3"><a href="product.html?id=10000004"><small>中性笔套装</small></a></p>
 					</div>
 				</div>
 				<div class="col-md-3">
 					<div class="goods-panel">
 						<img src="../images/portal/00GuangBo1040A5GBR0731/collect.png" class="img-responsive" />
 						<p>¥6.90</p>
-						<p class="text-row-3"><a href="product.html"><small>便利贴组合装</small></a></p>
+						<p class="text-row-3"><a href="product.html?id=10000001"><small>便利贴组合装</small></a></p>
 					</div>
 				</div>
 			</div>
@@ -67,7 +105,68 @@
 
 		<div class="clearfix"></div>
 		<footer class="footer">
-			<div class="col-md-12 text-center bottom">合肥工业大学宣城校区2023级信息安全 软件工程项目作业</div>
+			<!-- 品质保障，私人定制等-->
+			<div class="text-center rights container">
+				<div class="col-md-offset-2 col-md-2">
+					<span class="fa fa-thumbs-o-up"></span>
+					<p>品质保障</p>
+				</div>
+				<div class="col-md-2">
+					<span class="fa fa-address-card-o"></span>
+					<p>私人订制</p>
+				</div>
+				<div class="col-md-2">
+					<span class="fa fa-graduation-cap"></span>
+					<p>学生特供</p>
+				</div>
+				<div class="col-md-2">
+					<span class="fa fa-bitcoin"></span>
+					<p>专属特权</p>
+				</div>
+			</div>
+			<!--联系我们、下载客户端等-->
+			<div class="container beforeBottom">
+				<div class="col-md-offset-1 col-md-3">
+					<div><img src="../images/index/school.png" alt="" style="height: 100px; width: auto;" class="footLogo" /></div>
+				</div>
+				<div class="col-md-4 callus text-center">
+					<div class="col-md-4">
+						<ul>
+							<li>
+								<a href="#">
+									<p>买家帮助</p>
+								</a>
+							</li>
+							<li><a href="#">新手指南</a></li>
+							<li><a href="#">服务保障</a></li>
+							<li><a href="faq.html"><p>常见问题</p></a></li>
+						</ul>
+					</div>
+					<div class="col-md-4">
+						<ul>
+							<li>
+								<a href="#">
+									<p>商家帮助</p>
+								</a>
+							</li>
+							<li><a href="#">商家入驻</a></li>
+							<li><a href="#">商家后台</a></li>
+						</ul>
+					</div>
+					<div class="col-md-4">
+						<ul>
+							<li><a href="../about.html"><p>关于我们</p></a></li>
+							<li><a href="#">联系我们</a></li>
+							<li><a href="javascript:void(0);" onclick="alert('隐私政策 - 演示版');">隐私政策</a></li>
+							<li><a href="javascript:void(0);" onclick="alert('服务条款 - 演示版');">服务条款</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- 页面底部-备案号 #footer -->
+			<div class="col-md-12 text-center bottom">
+				合肥工业大学宣城校区2023级信息安全 软件工程项目作业<a target="_blank" href="http://www.dnsc.cn/"></a>
+			</div>
 		</footer>
 	</body>
 </html>

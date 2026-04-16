@@ -131,7 +131,7 @@
 					<h3 id="product-title" class="col-md-12 title-row-1">戴尔Dell 燃700R1605银色</h3>
 					<p id="product-sell-point" class="col-md-12 text-row-1"><small>仅上海，广州，沈阳仓有货！预购从速！</small></p>
 					<div class="col-md-12 price-bar">
-						<small>学员售价：</small> ¥<span id="product-price">4899.00</span>
+						<small>售价：</small> ¥<span id="product-price">4899.00</span>
 						<div><small>*退货补运费 *7天无理由退货 *24小时快速退款 </small></div>
 					</div>
 					<form class="form-inline product-form col-md-12" role="form">
@@ -286,6 +286,12 @@
 		<script type="text/javascript" src="../js/jquery-getUrlParam.js"></script>
 		<script type="text/javascript">
 			let id = $.getUrlParam("id");
+			let from = $.getUrlParam("from");
+			let sp = $.getUrlParam("sp");
+			if (!id || !/^\d+$/.test(id)) {
+				location.href = "index.html";
+				throw new Error("Missing product id");
+			}
 
 			$(document).ready(function() {
 				$.ajax({
@@ -297,6 +303,9 @@
 							$("#product-title").html(json.data.title);
 							$("#product-sell-point").html(json.data.sellPoint);
 							$("#product-price").html(json.data.price);
+							if (from === "seckill" && sp && /^\d+(?:\.\d{1,2})?$/.test(sp)) {
+								$("#product-price").html(sp);
+							}
 							for (let i = 1; i <= 5; i++) {
 								$("#product-image-" + i + "-big").attr("src", ".." +
 										json.data.image + i + "_big.png");

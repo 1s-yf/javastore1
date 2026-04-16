@@ -28,6 +28,32 @@ $(function () {
 		});
 	}
 
+	function cleanupFooterLinks() {
+		$("footer.footer a").each(function () {
+			var $a = $(this);
+			var text = ($a.text() || "").replace(/\s+/g, "").trim();
+			if (text !== "关于圆心") {
+				return;
+			}
+			var $li = $a.closest("li");
+			if ($li.length) {
+				$li.remove();
+			} else {
+				$a.remove();
+			}
+		});
+
+		$("footer.footer .fa-wechat, footer.footer .fa-weibo").each(function () {
+			var $icon = $(this);
+			var $li = $icon.closest("li");
+			if ($li.length) {
+				$li.remove();
+			} else {
+				$icon.remove();
+			}
+		});
+	}
+
 	function markPersonalCenterNavItem() {
 		var $btn = $("button.btn-link.dropdown-toggle[data-toggle='dropdown']");
 		if ($btn.length) {
@@ -41,6 +67,7 @@ $(function () {
 
 	markPersonalCenterNavItem();
 	patchTopNavLinks();
+	cleanupFooterLinks();
 
 	function bindLoginModalHandlers() {
 		if (modalHandlersBound) {
