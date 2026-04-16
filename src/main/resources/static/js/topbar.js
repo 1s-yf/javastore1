@@ -3,6 +3,31 @@ $(function () {
 	var cachedLoggedIn = false;
 	var modalHandlersBound = false;
 
+	function patchTopNavLinks() {
+		var map = {
+			"秒杀": "seckill.html",
+			"优惠券": "coupon.html",
+			"电脑VIP": "vip.html",
+			"外卖": "takeout.html",
+			"超市": "market.html"
+		};
+		$(".top-nav ul.nav-pills a").each(function () {
+			var $a = $(this);
+			var text = ($a.text() || "").replace(/\s+/g, "").trim();
+			if (!text) {
+				return;
+			}
+			var target = map[text];
+			if (!target) {
+				return;
+			}
+			var href = $a.attr("href") || "";
+			if (href === "#" || href === "") {
+				$a.attr("href", target);
+			}
+		});
+	}
+
 	function markPersonalCenterNavItem() {
 		var $btn = $("button.btn-link.dropdown-toggle[data-toggle='dropdown']");
 		if ($btn.length) {
@@ -15,6 +40,7 @@ $(function () {
 	}
 
 	markPersonalCenterNavItem();
+	patchTopNavLinks();
 
 	function bindLoginModalHandlers() {
 		if (modalHandlersBound) {
