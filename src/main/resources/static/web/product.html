@@ -145,7 +145,7 @@
 							<p><small><b>电脑商城</b>发货并提供售后服务,今日下单,明日送达</small></p>
 						</div>
 						<div class="col-md-12 form-space">
-							<input class="btn btn-primary btn-lg btn-block" type="button" value="立即购买">
+							<input class="btn btn-primary btn-lg btn-block" type="button" value="立即购买" id="btn-buy-now">
 						</div>
 						<div class="col-md-12 form-space">
 							<button id="btn-add-to-cart" type="button" class="btn btn-default go-cart"><span class="fa fa-cart-plus"></span> 加入购物车</button>
@@ -191,7 +191,7 @@
 						</div>
 						<div class="row">
 							<p class="col-md-offset-1 col-md-11 saled-content">
-								凭质保证书及电脑商城发票，可享受全国联保服务（奢侈品、钟表除外；奢侈品、钟表由电脑商城联系保修，享受法定三包售后服务），与您亲临商场选购的商品享受相同的质量保证。电脑商城还为您提供具有竞争力商品价格和运费政策，请您放心购买！
+								凭质保证书及电脑商城发票，可享受全国联保服务（奢侈品、钟表除外；奢侈品、钟表由电脑商城联系保修，享受法定三包售后服务），与您亲临商场选购的商品享受相同的质量保证。电脑商城还为您具有竞争力商品价格和运费政策，请您放心购买！
 								<br /> 注：因厂家会在没有任何提前通知的情况下更改产品包装、产地或者一些附件，本司不能确保客户收到的货物与商城图片、产地、附件说明完全一致。只能确保为原厂正货！并且保证与当时市场上同样主流新品一致。若本商城没有及时更新，请大家谅解！
 							</p>
 						</div>
@@ -319,6 +319,79 @@
 						}
 					}
 				});
+
+				// ========== 以下是新增的功能代码，完全不影响原有逻辑 ==========
+				// 1. 数量加减按钮
+				$('#numUp').click(function(){
+					let num = parseInt($('#num').val());
+					$('#num').val(num + 1);
+				});
+				$('#numDown').click(function(){
+					let num = parseInt($('#num').val());
+					if(num > 1) $('#num').val(num - 1);
+				});
+
+				// 2. 加入购物车（有提示、存入localStorage）
+				$('#btn-add-to-cart').click(function(){
+					let productId = id;
+					let title = $('#product-title').text();
+					let price = parseFloat($('#product-price').text());
+					let num = parseInt($('#num').val());
+					let image = $('#product-image-1').attr('src');
+
+					let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+					let index = cart.findIndex(item => item.id == productId);
+
+					if(index >= 0){
+						// 已存在，增加数量
+						cart[index].num += num;
+					}else{
+						// 新商品，加入购物车
+						cart.push({
+							id: productId,
+							title: title,
+							price: price,
+							num: num,
+							image: image
+						});
+					}
+
+					localStorage.setItem('cart', JSON.stringify(cart));
+					alert('✅ 加入购物车成功！可前往购物车查看');
+				});
+
+				// 3. 加入收藏（有提示、存入localStorage）
+				$('#btn-add-to-collect').click(function(){
+					let productId = id;
+					let title = $('#product-title').text();
+					let price = parseFloat($('#product-price').text());
+					let image = $('#product-image-1').attr('src');
+
+					let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+					let exist = favorites.some(item => item.id == productId);
+
+					if(exist){
+						alert('该商品已在收藏列表中！');
+						return;
+					}
+
+					favorites.push({
+						id: productId,
+						title: title,
+						price: price,
+						image: image
+					});
+
+					localStorage.setItem('favorites', JSON.stringify(favorites));
+					alert('✅ 加入收藏成功！可前往收藏页查看');
+				});
+
+				// 4. ✅ 立即购买 —— 跳转到确认订单页面（和购物车完全一样）
+				$('#btn-buy-now').click(function(){
+					let count = parseInt($('#num').val());
+					location.href = "orderConfirm.html?ids=" + id + "&counts=" + count;
+				});
+				// =========================================================
 			});
 		</script>
 	</body>

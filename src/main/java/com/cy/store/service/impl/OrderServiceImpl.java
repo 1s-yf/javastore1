@@ -23,10 +23,8 @@ import java.util.List;
 public class OrderServiceImpl implements IOrderService {
     @Autowired
     private OrderMapper orderMapper;
-
     @Autowired
     private OrderItemMapper orderItemMapper;
-
     @Autowired
     private AddressMapper addressMapper;
 
@@ -46,27 +44,20 @@ public class OrderServiceImpl implements IOrderService {
         }
 
         List<OrderCreateRequest.OrderItemRequest> reqItems = request.getItems();
-        if (reqItems == null) {
-            reqItems = new ArrayList<>();
-        }
+        if (reqItems == null) reqItems = new ArrayList<>();
 
         long computedTotal = 0L;
         for (OrderCreateRequest.OrderItemRequest item : reqItems) {
-            if (item == null) {
-                continue;
-            }
+            if (item == null) continue;
             Long price = item.getPrice() == null ? 0L : item.getPrice();
             Integer num = item.getNum() == null ? 0 : item.getNum();
             computedTotal += price * num;
         }
 
         Long totalPrice = request.getTotalPrice();
-        if (totalPrice == null || totalPrice <= 0) {
-            totalPrice = computedTotal;
-        }
+        if (totalPrice == null || totalPrice <= 0) totalPrice = computedTotal;
 
         Date now = new Date();
-
         Order order = new Order();
         order.setUid(uid);
         order.setRecvName(address.getName());
@@ -85,16 +76,12 @@ public class OrderServiceImpl implements IOrderService {
         order.setModifiedTime(now);
 
         Integer rows = orderMapper.insert(order);
-        if (rows != 1) {
-            throw new InsertException("创建订单失败");
-        }
+        if (rows != 1) throw new InsertException("创建订单失败");
 
         Integer oid = order.getOid();
         List<OrderItem> items = new ArrayList<>();
         for (OrderCreateRequest.OrderItemRequest item : reqItems) {
-            if (item == null) {
-                continue;
-            }
+            if (item == null) continue;
             OrderItem orderItem = new OrderItem();
             orderItem.setOid(oid);
             orderItem.setPid(item.getPid() == null ? 0 : item.getPid());
@@ -108,9 +95,7 @@ public class OrderServiceImpl implements IOrderService {
             orderItem.setModifiedTime(now);
 
             rows = orderItemMapper.insert(orderItem);
-            if (rows != 1) {
-                throw new InsertException("创建订单商品失败");
-            }
+            if (rows != 1) throw new InsertException("创建订单商品失败");
             items.add(orderItem);
         }
 
@@ -122,17 +107,40 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     public List<Order> getByUid(Integer uid) {
         List<Order> list = orderMapper.findByUid(uid);
-        if (list == null) {
-            return new ArrayList<>();
-        }
+        if (list == null) return new ArrayList<>();
         for (Order order : list) {
-            if (order == null) {
-                continue;
-            }
+            if (order == null) continue;
             List<OrderItem> items = orderItemMapper.findByOid(order.getOid());
             order.setItems(items);
             order.setUid(null);
         }
         return list;
+    }
+
+    @Override
+    public void confirmReceive(Integer oid) {
+        Order order = new Order();
+        order.setOid(oid);
+        order.setStatus(3);
+        order.setModifiedTime(new Date());
+        orderMapper.updateStatus(order);
+    }
+
+    @Override
+    public void applyAfterSale(Integer oid) {
+        Order order = new Order();
+        order.setOid(oid);
+        order.setStatus(5);
+        order.setModifiedTime(new Date());
+        orderMapper.updateStatus(order);
+    }
+
+    @Override
+    public Order getById(Integer oid, Integer uid) {
+        Order order = orderMapper.findById(oid);
+        if (order == null) return null;
+        List<OrderItem> items = orderItemMapper.findByOid(oid);
+        order.setItems(items);
+        return order;
     }
 }

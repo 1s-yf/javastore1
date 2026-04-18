@@ -1,32 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cy.store.mapper.OrderMapper">
-    <resultMap id="OrderEntity" type="com.cy.store.entity.Order">
-        <id column="oid" property="oid" />
-        <result column="uid" property="uid" />
-        <result column="recv_name" property="recvName" />
-        <result column="recv_phone" property="recvPhone" />
-        <result column="recv_province" property="recvProvince" />
-        <result column="recv_city" property="recvCity" />
-        <result column="recv_area" property="recvArea" />
-        <result column="recv_address" property="recvAddress" />
-        <result column="total_price" property="totalPrice" />
-        <result column="status" property="status" />
-        <result column="order_time" property="orderTime" />
-        <result column="pay_time" property="payTime" />
-        <result column="created_user" property="createdUser" />
-        <result column="created_time" property="createdTime" />
-        <result column="modified_user" property="modifiedUser" />
-        <result column="modified_time" property="modifiedTime" />
-    </resultMap>
 
-    <insert id="insert" useGeneratedKeys="true" keyProperty="oid">
+    <insert id="insert" parameterType="com.cy.store.entity.Order" useGeneratedKeys="true" keyProperty="oid">
         INSERT INTO t_order (
-            uid, recv_name, recv_phone, recv_province, recv_city, recv_area, recv_address,
-            total_price, status, order_time, pay_time,
-            created_user, created_time, modified_user, modified_time
+            uid, recvName, recvPhone, recvProvince, recvCity, recvArea, recvAddress,
+            totalPrice, status, orderTime, payTime,
+            createdUser, createdTime, modifiedUser, modifiedTime
         ) VALUES (
             #{uid}, #{recvName}, #{recvPhone}, #{recvProvince}, #{recvCity}, #{recvArea}, #{recvAddress},
             #{totalPrice}, #{status}, #{orderTime}, #{payTime},
@@ -34,14 +14,26 @@
         )
     </insert>
 
-    <select id="findByUid" resultMap="OrderEntity">
-        SELECT
-            *
-        FROM
-            t_order
-        WHERE
-            uid=#{uid}
-        ORDER BY
-            order_time DESC
+    <select id="findByUid" resultType="com.cy.store.entity.Order">
+        SELECT oid, uid, recvName, recvPhone, recvProvince, recvCity, recvArea,
+               recvAddress, totalPrice, status, orderTime, payTime,
+               createdUser, createdTime, modifiedUser, modifiedTime
+        FROM t_order
+        WHERE uid = #{uid}
+        ORDER BY oid DESC
     </select>
+
+    <select id="findById" resultType="com.cy.store.entity.Order">
+        SELECT oid, uid, recvName, recvPhone, recvProvince, recvCity, recvArea,
+               recvAddress, totalPrice, status, orderTime, payTime
+        FROM t_order
+        WHERE oid = #{oid}
+    </select>
+
+    <update id="updateStatus">
+        UPDATE t_order
+        SET status = #{status}, modifiedTime = #{modifiedTime}
+        WHERE oid = #{oid}
+    </update>
+
 </mapper>

@@ -170,6 +170,47 @@
 			</div>
 		</footer>
 		<!--页脚结束-->
+		<script>
+			$(function(){
+				renderFavorites();
+			});
+
+			function renderFavorites(){
+				let list = JSON.parse(localStorage.getItem('favorites') || '[]');
+				let $container = $('#favorites-list');
+				$container.empty();
+
+				if(list.length === 0){
+					$container.html('<div class="col-md-12" style="margin:20px 0;">暂无收藏</div>');
+					return;
+				}
+
+				list.forEach(item => {
+					let html = `
+					<div class="col-md-3" style="margin-bottom:20px;">
+						<div class="thumbnail">
+							<img src="${item.image}" style="height:100px; margin:0 auto;">
+							<div class="caption text-center">
+								<p><a href="product.html?id=${item.id}">${item.title}</a></p>
+								<p>¥${item.price.toFixed(2)}</p>
+								<p>
+									<button class="btn btn-xs btn-danger" onclick="cancelCollect('${item.id}')">取消收藏</button>
+								</p>
+							</div>
+						</div>
+					</div>
+					`;
+					$container.append(html);
+				});
+			}
+
+			function cancelCollect(id){
+				let fav = JSON.parse(localStorage.getItem('favorites') || '[]');
+				fav = fav.filter(item => item.id != id);
+				localStorage.setItem('favorites', JSON.stringify(fav));
+				renderFavorites();
+			}
+		</script>
 	</body>
 
 </html>

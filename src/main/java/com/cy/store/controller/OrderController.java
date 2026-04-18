@@ -32,4 +32,23 @@ public class OrderController extends BaseController {
         List<Order> list = orderService.getByUid(uid);
         return new JsonResult<>(Ok, list);
     }
+
+    @RequestMapping("confirmReceive")
+    public JsonResult<Void> confirmReceive(Integer oid) {
+        orderService.confirmReceive(oid);
+        return new JsonResult<>(Ok);
+    }
+
+    @RequestMapping("applyAfterSale")
+    public JsonResult<Void> applyAfterSale(Integer oid) {
+        orderService.applyAfterSale(oid);
+        return new JsonResult<>(Ok);
+    }
+
+    @RequestMapping("getById")
+    public JsonResult<Order> getById(Integer oid, HttpSession session) {
+        Integer uid = getuidFromSession(session);
+        Order order = orderService.getById(oid, uid);
+        return new JsonResult<>(Ok, order);
+    }
 }

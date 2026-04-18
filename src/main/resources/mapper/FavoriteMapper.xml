@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cy.store.mapper.FavoriteMapper">
+
+    <insert id="insert" parameterType="com.cy.store.entity.Favorite">
+        INSERT INTO t_favorite (uid, pid, created_user, created_time, modified_user, modified_time)
+        VALUES (#{uid}, #{pid}, #{createdUser}, now(), #{modifiedUser}, now())
+    </insert>
+
+    <select id="listByUid" resultType="com.cy.store.entity.Favorite">
+        SELECT fid, uid, pid FROM t_favorite WHERE uid=#{uid}
+    </select>
+
+    <delete id="delete">
+        DELETE FROM t_favorite WHERE fid=#{fid}
+    </delete>
+
+    <select id="findByUidAndPid" resultType="com.cy.store.entity.Favorite">
+        SELECT fid FROM t_favorite WHERE uid=#{uid} AND pid=#{pid}
+    </select>
+
+</mapper>
