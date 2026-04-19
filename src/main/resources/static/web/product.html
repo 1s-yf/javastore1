@@ -161,6 +161,19 @@
 				</div>
 			</div>
 			<!--商品信息展示结束-->
+			<!--商品评价开始-->
+			<div class="col-md-offset-1 col-md-10">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h2 class="panel-title">商品评价</h2>
+					</div>
+					<div class="panel-body">
+						<div id="product-comment-summary" style="margin-bottom:10px;"></div>
+						<div id="product-comment-list"></div>
+					</div>
+				</div>
+			</div>
+			<!--商品评价结束-->
 			<!--售后信息开始-->
 			<div class="col-md-offset-1 col-md-10">
 				<div class="panel panel-default">
@@ -299,6 +312,54 @@
 				throw new Error("Missing product id");
 			}
 
+			function escapeHtml(text) {
+				return String(text == null ? "" : text)
+					.replace(/&/g, "&amp;")
+					.replace(/</g, "&lt;")
+					.replace(/>/g, "&gt;")
+					.replace(/\"/g, "&quot;")
+					.replace(/'/g, "&#039;");
+			}
+
+			function loadProductComments(pid) {
+				var key = "product_comments_" + pid;
+				try {
+					return JSON.parse(localStorage.getItem(key) || '[]');
+				} catch (e) {
+					return [];
+				}
+			}
+
+			function renderProductComments(pid) {
+				var list = loadProductComments(pid);
+				if (!list || list.length === 0) {
+					$("#product-comment-summary").html('<span class="text-muted">暂无评价</span>');
+					$("#product-comment-list").html('');
+					return;
+				}
+				var total = 0;
+				for (var i = 0; i < list.length; i++) {
+					var s = parseInt(list[i] && list[i].score, 10);
+					if (isNaN(s)) s = 0;
+					total += s;
+				}
+				var avg = (total / list.length).toFixed(1);
+				$("#product-comment-summary").html('<b>综合评分：</b>' + avg + ' / 5 （' + list.length + '条评价）');
+
+				var html = '';
+				for (var j = 0; j < list.length && j < 10; j++) {
+					var c = list[j] || {};
+					var score = parseInt(c.score, 10);
+					if (isNaN(score)) score = 5;
+					html += ''
+						+ '<div class="panel panel-info" style="margin-bottom:10px;">'
+						+ '  <div class="panel-heading">评分：' + score + ' / 5 <span class="pull-right">' + escapeHtml(c.time || '') + '</span></div>'
+						+ '  <div class="panel-body">' + escapeHtml(c.content || '') + '</div>'
+						+ '</div>';
+				}
+				$("#product-comment-list").html(html);
+			}
+
 			$(document).ready(function() {
 				$.ajax({
 					url: "/products/" + id + "/details",
@@ -322,6 +383,7 @@
 								$("#product-image-" + i).attr("src", ".." + json.data.image
 										+ i + ".jpg");
 							}
+							renderProductComments(id);
 						} else if (json.state == 4006) { // 商品数据不存在的异常
 							location.href = "index.html";
 						} else {

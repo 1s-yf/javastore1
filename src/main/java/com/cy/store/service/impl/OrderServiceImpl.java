@@ -28,6 +28,29 @@ public class OrderServiceImpl implements IOrderService {
     @Autowired
     private AddressMapper addressMapper;
 
+    private void autoShipIfNeeded(Order order) {
+        if (order == null) {
+            return;
+        }
+        Integer status = order.getStatus();
+        Date orderTime = order.getOrderTime();
+        if (status == null || status != 1 || orderTime == null) {
+            return;
+        }
+        long now = System.currentTimeMillis();
+        long t = orderTime.getTime();
+        if (now - t < 60_000L) {
+            return;
+        }
+        Order update = new Order();
+        update.setOid(order.getOid());
+        update.setStatus(2);
+        update.setModifiedTime(new Date());
+        orderMapper.updateStatus(update);
+        order.setStatus(2);
+        order.setModifiedTime(update.getModifiedTime());
+    }
+
     @Transactional
     @Override
     public Order createPaidOrder(Integer uid, String username, OrderCreateRequest request) {
@@ -110,6 +133,7 @@ public class OrderServiceImpl implements IOrderService {
         if (list == null) return new ArrayList<>();
         for (Order order : list) {
             if (order == null) continue;
+            autoShipIfNeeded(order);
             List<OrderItem> items = orderItemMapper.findByOid(order.getOid());
             order.setItems(items);
             order.setUid(null);
@@ -148,6 +172,7 @@ public class OrderServiceImpl implements IOrderService {
     public Order getById(Integer oid, Integer uid) {
         Order order = orderMapper.findById(oid);
         if (order == null) return null;
+        autoShipIfNeeded(order);
         List<OrderItem> items = orderItemMapper.findByOid(oid);
         order.setItems(items);
         return order;

@@ -88,7 +88,6 @@
                             <div><a href="orders.html?status=2">待收货</a></div>
                             <div><a href="orders.html?status=3">待评价</a></div>
                             <div><a href="orders.html?status=4">已完成</a></div>
-                            <div><a href="orders.html?status=5">已售后</a></div>
                         </div>
                     </div>
                 </div>
@@ -261,6 +260,9 @@
         function loadOrderList(){
             // 获取当前要过滤的状态
             let filterStatus = getUrlParam("status");
+            if(filterStatus === 5){
+                filterStatus = null;
+            }
 
             $.ajax({
                 url: "/orders",

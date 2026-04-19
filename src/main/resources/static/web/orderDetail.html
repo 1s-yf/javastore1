@@ -116,7 +116,10 @@
             return "";
         }
 
-        function buildLogisticsHtml(status, oid) {
+        function buildLogisticsHtml(order) {
+            var status = order && order.status != null ? order.status : 0;
+            var oid = order && order.oid ? order.oid : "";
+            var orderTimeRaw = order && order.orderTime ? order.orderTime : null;
             var html = '';
             html += '<hr/>';
             html += '<div><b>物流信息：</b></div>';
@@ -126,14 +129,30 @@
                 return html;
             }
 
+            var shipper = '王先生';
+            var shipFrom = '安徽省宣城市合肥工业大学';
+            var shipTimeText = '';
+            if (orderTimeRaw) {
+                var ot = new Date(orderTimeRaw);
+                if (!isNaN(ot.getTime())) {
+                    var st = new Date(ot.getTime() + 60 * 1000);
+                    shipTimeText = st.toLocaleString();
+                }
+            }
+
             var company = '顺丰速运';
             var trackingNo = 'SF' + oid;
 
             html += '<div style="margin-top:8px;"><b>快递公司：</b>' + company + '</div>';
             html += '<div><b>物流单号：</b>' + trackingNo + '</div>';
+            html += '<div><b>发货人：</b>' + shipper + '</div>';
+            html += '<div><b>发货地址：</b>' + shipFrom + '</div>';
+            if (shipTimeText) {
+                html += '<div><b>发货时间：</b>' + shipTimeText + '</div>';
+            }
 
             html += '<div style="margin-top:10px;">';
-            html += '<div>1. 商家已发货</div>';
+            html += '<div>1. 商家已发货' + (shipTimeText ? ('（' + shipTimeText + '）') : '') + '</div>';
             html += '<div>2. 快件已揽收</div>';
             html += '<div>3. 运输中</div>';
             if (status >= 3 || status === 4 || status === 5) {
@@ -185,7 +204,7 @@
                 html += '<div><b>收货地址：</b>' + (o.recvProvince || "") + (o.recvCity || "") + (o.recvArea || "") + (o.recvAddress || "") + '</div>';
                 html += '<div><b>订单总价：</b>¥' + (o.totalPrice || 0) + '</div>';
 
-                html += buildLogisticsHtml(o.status, o.oid || oid);
+                html += buildLogisticsHtml(o);
 
                 if (o.items && o.items.length) {
                     html += '<hr/>';

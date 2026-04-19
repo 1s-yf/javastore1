@@ -216,15 +216,22 @@
                 });
             }
 
-            $.get("/orders/complete", { oid: oid }, function(res){
-                if(res && res.state === 200){
-                    alert("评价成功");
-                    location.href = "orders.html";
-                    return;
+            $.ajax({
+                url: "/orders/complete",
+                type: "GET",
+                data: { oid: oid },
+                dataType: "json",
+                success: function(res){
+                    if(res && res.state === 200){
+                        alert("评价成功");
+                        location.href = "orders.html";
+                        return;
+                    }
+                    alert(res && res.message ? res.message : "评价失败");
+                },
+                error: function(){
+                    alert("评价失败");
                 }
-                alert(res && res.message ? res.message : "评价失败");
-            }).fail(function(){
-                alert("评价失败");
             });
         });
     });
