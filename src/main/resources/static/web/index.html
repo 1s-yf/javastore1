@@ -177,22 +177,22 @@
 							<div class="col-md-12">
 								<div class="col-md-7 text-row-2"><a href="product.html?id=10000013">齐心（COMIX）C5902 A5优品商务笔记本子记事本日记本122张</a></div>
 								<div class="col-md-2">¥18</div>
-								<div class="col-md-3"><img src="../images/portal/02COMIXC5902A5122blue/collect.png" class="img-responsive" /></div>
+								<div class="col-md-3"><a href="product.html?id=10000013"><img src="../images/portal/02COMIXC5902A5122blue/collect.png" class="img-responsive" /></a></div>
 							</div>
 							<div class="col-md-12">
 								<div class="col-md-7 text-row-2"><a href="product.html?id=10000004">得力（deli）1548A商务办公桌面计算器 太阳能双电源</a></div>
 								<div class="col-md-2">¥50</div>
-								<div class="col-md-3"><img src="../images/portal/002calculator1548A/collect.png" class="img-responsive" /></div>
+								<div class="col-md-3"><a href="product.html?id=10000004"><img src="../images/portal/002calculator1548A/collect.png" class="img-responsive" /></a></div>
 							</div>
 							<div class="col-md-12">
 								<div class="col-md-7 text-row-2"><a href="product.html?id=10000016">戴尔(DELL)XPS13-9360-R1609 13.3英寸超轻笔记本</a></div>
 								<div class="col-md-2">¥6299</div>
-								<div class="col-md-3"><img src="../images/portal/12(DELL)XPS13gold/collect.png" class="img-responsive" /></div>
+								<div class="col-md-3"><a href="product.html?id=10000016"><img src="../images/portal/12(DELL)XPS13gold/collect.png" class="img-responsive" /></a></div>
 							</div>
 							<div class="col-md-12">
 								<div class="col-md-7 text-row-2"><a href="product.html?id=10000024">联想（Lenovo）IdeaPad310高配版黑色</a></div>
 								<div class="col-md-2">¥5298</div>
-								<div class="col-md-3"><img src="../images/portal/13LenovoIdeaPad310_black/collect.png" class="img-responsive" /></div>
+								<div class="col-md-3"><a href="product.html?id=10000024"><img src="../images/portal/13LenovoIdeaPad310_black/collect.png" class="img-responsive" /></a></div>
 							</div>
 						</div>
 					</div>
@@ -592,6 +592,16 @@
 					}
 				});
 
+				$(document).on("click", ".goods-panel, .panel-item .col-md-12", function (e) {
+					if ($(e.target).closest("a").length) {
+						return;
+					}
+					var href = $(this).find("a[href]").first().attr("href");
+					if (href) {
+						location.href = href;
+					}
+				});
+
 				$("#link-favorites, #link-orders, #link-cart").click(function(e) {
 					e.preventDefault();
 					var target = $(this).attr("href");
@@ -626,12 +636,13 @@
 									'<div class="col-md-12">'
 									+ '<div class="col-md-7 text-row-2"><a href="product.html?id=#{id}">#{title}</a></div>'
 									+ '<div class="col-md-2">¥#{price}</div>'
-									+ '<div class="col-md-3"><img src="..#{image}collect.png" class="img-responsive" /></div>'
+									+ '<div class="col-md-3"><a href="product.html?id=#{id}"><img src="..#{image}collect.png" class="img-responsive" /></a></div>'
 									+ '</div>';
 								html = html.replace(/#{id}/g,    list[i].id);
 								html = html.replace(/#{title}/g, list[i].title);
 								html = html.replace(/#{price}/g, list[i].price);
 								html = html.replace(/#{image}/g, list[i].image);
+
 								$("#hot-list").append(html);
 							}
 						} else {

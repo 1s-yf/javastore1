@@ -45,6 +45,12 @@ public class OrderController extends BaseController {
         return new JsonResult<>(Ok);
     }
 
+    @RequestMapping("complete")
+    public JsonResult<Void> complete(Integer oid) {
+        orderService.complete(oid);
+        return new JsonResult<>(Ok);
+    }
+
     @RequestMapping("getById")
     public JsonResult<Order> getById(Integer oid, HttpSession session) {
         Integer uid = getuidFromSession(session);

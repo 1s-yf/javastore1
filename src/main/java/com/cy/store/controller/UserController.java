@@ -1,27 +1,27 @@
 package com.cy.store.controller;
 
 import com.cy.store.controller.ex.FileEmptyException;
+import com.cy.store.controller.ex.FileSizeException;
 import com.cy.store.controller.ex.FileStateException;
 import com.cy.store.controller.ex.FileTypeException;
-import com.cy.store.controller.ex.FileUploadException;
+import com.cy.store.controller.ex.FileUploadIOException;
 import com.cy.store.entity.User;
 import com.cy.store.service.IUserService;
-import com.cy.store.service.ex.InsertException;
-import com.cy.store.service.ex.UsernameDuplicatedException;
 import com.cy.store.util.JsonResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpSession;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 @RestController//@controller+@ResponseBody
@@ -100,37 +100,86 @@ public class UserController extends BaseController{
 
     @RequestMapping("change_avatar")
     public JsonResult<String> changeAvatar(HttpSession session, MultipartFile file) {
-         if (file.isEmpty()) {
+         if (file == null || file.isEmpty()) {
              throw new FileEmptyException("文件为空");
+         }
+         if (file.getSize() > AVATAR_MAX_SIZE) {
+             throw new FileSizeException("文件大小超出限制");
          }
          if (!AVATAR_TYPE.contains(file.getContentType())) {
              throw new FileTypeException("文件类型不支持");
          }
 
          String parent = session.getServletContext().getRealPath("upload");
+         System.out.println("[Avatar] getRealPath('upload') = " + parent);
+         if (parent == null) {
+             parent = System.getProperty("user.dir") + File.separator + "upload";
+             System.out.println("[Avatar] fallback upload dir = " + parent);
+         }
          File dir = new File(parent);
          if (!dir.exists()) {
-             dir.mkdirs();
+             boolean created = dir.mkdirs();
+             System.out.println("[Avatar] mkdirs result = " + created + ", path = " + dir.getAbsolutePath());
          }
 
          String orignalFilename = file.getOriginalFilename();
-        System.out.println("OriginalFilename=" + orignalFilename);
-        int dotIndex = orignalFilename.lastIndexOf(".");
-        String suffix = orignalFilename.substring(dotIndex);//文件后缀
-        String filename = UUID.randomUUID().toString().toUpperCase() + suffix;
+        System.out.println("[Avatar] OriginalFilename=" + orignalFilename + ", size=" + file.getSize() + ", contentType=" + file.getContentType());
+        String suffix = null;
+        if (orignalFilename != null) {
+            int dotIndex = orignalFilename.lastIndexOf(".");
+            if (dotIndex >= 0 && dotIndex < orignalFilename.length() - 1) {
+                suffix = orignalFilename.substring(dotIndex);
+            }
+        }
+        if (suffix == null) {
+            String ct = file.getContentType();
+            if ("image/jpeg".equals(ct)) {
+                suffix = ".jpg";
+            } else if ("image/png".equals(ct)) {
+                suffix = ".png";
+            } else if ("image/gif".equals(ct)) {
+                suffix = ".gif";
+            } else if ("image/bmp".equals(ct)) {
+                suffix = ".bmp";
+            } else {
+                suffix = ".png";
+            }
+        }
+        String filename = UUID.randomUUID().toString().toUpperCase() + ".png";
         File dest = new File(dir, filename);
 
         try {
-            file.transferTo(dest);
-        } catch (FileStateException e) {
+            BufferedImage srcImage = ImageIO.read(file.getInputStream());
+            if (srcImage == null) {
+                throw new FileTypeException("无法解析图片文件");
+            }
+            int sw = srcImage.getWidth();
+            int sh = srcImage.getHeight();
+            int cropSize = Math.min(sw, sh);
+            int x = (sw - cropSize) / 2;
+            int y = (sh - cropSize) / 2;
+            BufferedImage cropped = srcImage.getSubimage(x, y, cropSize, cropSize);
+            BufferedImage resized = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2d = resized.createGraphics();
+            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g2d.drawImage(cropped, 0, 0, 200, 200, null);
+            g2d.dispose();
+            ImageIO.write(resized, "png", dest.getAbsoluteFile());
+            System.out.println("[Avatar] file saved (200x200) to: " + dest.getAbsolutePath());
+        } catch (IllegalStateException e) {
+            System.out.println("[Avatar] IllegalStateException: " + e.getMessage());
+            e.printStackTrace();
             throw new FileStateException("文件状态异常");
         } catch (IOException e) {
-            throw new FileUploadException("文件读写异常");
+            System.out.println("[Avatar] IOException: " + e.getMessage());
+            e.printStackTrace();
+            throw new FileUploadIOException("文件读写异常");
         }
 
         Integer uid = getuidFromSession(session);
         String username = getUsernameFromSession(session);
         String avatar = "/upload/" + filename;
+        System.out.println("[Avatar] updating DB: uid=" + uid + ", avatar=" + avatar);
         userService.changeAvatar(uid,avatar,username);
         //
         return new JsonResult<>(Ok,avatar);

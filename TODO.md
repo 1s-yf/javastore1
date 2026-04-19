@@ -34,7 +34,6 @@
 
   4. √---登录/注册页面，设置密码要有限制，长度大于8位，包含大小写字母、数字、特殊字符，且实现了隐藏
 
-### 待修复：
   1. 左侧蓝色侧栏中图书音像、家用电器等内容和这个项目——电脑商城无关，
   （1）需要把这些替换成电脑相关的分类，比如笔记本、台式机、显示器等等分类，
   （2）需要将商品按照（1）的分类进行分类，
@@ -52,3 +51,17 @@
   4. 订单页面和逻辑完善：有下单时间、订单号、商品名称、商品价格、商品数量、商品总价、订单状态、操作（查看订单、申请售后、确认收货）等信息和服务
   下单逻辑：点击商品详情页的“立即购买”按钮，跳转到订单页面，填写收货地址、选择支付方式、确认订单，提交订单；在购物车页面也可以直接提交订单
 
+
+### 待修复：
+  1. 将首页商品展示列表里的商品实现点击跳转到商品详情页功能
+
+  2. 我的订单页面目前显示失败，显示“加载失败： ### Error querying database. Cause: java.sql.SQLSyntaxErrorException: Unknown column 'recvName' in 'field list' ### The error may exist in file [C:\Users\LY\Desktop\javastore-main\javastore-main\target\classes\mapper\OrderMapper.xml] ### The error may involve defaultParameterMap ### The error occurred while setting parameters ### SQL: SELECT oid, uid, recvName, recvPhone, recvProvince, recvCity, recvArea, recvAddress, totalPrice, status, orderTime, payTime, createdUser, createdTime, modifiedUser, modifiedTime FROM t_order WHERE uid = ? ORDER BY oid DESC ### Cause: java.sql.SQLSyntaxErrorException: Unknown column 'recvName' in 'field list' ; bad SQL grammar []; nested exception is java.sql.SQLSyntaxErrorException: Unknown column 'recvName' in 'field list'”，修复
+
+  所有状态的订单都能够在全部订单页面展示，一个订单一条记录，
+  刚下单未付款的时候应该在待付款页面，一个订单一条记录，后面有立即付款按钮以及从下单开始的30分钟倒计时；
+  已付款未发货的时候应该在待发货页面，一个订单一条记录，后面有催发货按钮；
+  已发货的时候应该在待收货页面，一个订单一条记录，后面有查看物流、确认收货按钮，点击查看物流跳转到物流信息页面，点击确认收货弹窗提示“是否确认收货？”，有确认和取消按钮，点确认弹窗提醒”收货成功，快来评价吧！“，弹窗有立即评论和稍后再说两个按钮，点击立即评论跳转到评论页面，点击稍后再说关闭弹窗。；
+  已收货的时候应该在待评价页面，一个订单一条记录，后面有立即评价按钮，点击跳转到该订单的评价页面；
+  已评价的时候应该在已完成页面，一个订单一条记录，后面有再次购买按钮，点击就跳转到对应商品详情页。
+  2. 在商品详情页新增评论板块，对于每个商品都有关联的评论，可以进行评论的展示；
+  对用户购买且确认收货的商品，该用户可以在我的订单页面里找到对应商品并点击评论按钮进行评论。

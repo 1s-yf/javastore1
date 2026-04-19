@@ -136,6 +136,15 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
+    public void complete(Integer oid) {
+        Order order = new Order();
+        order.setOid(oid);
+        order.setStatus(4);
+        order.setModifiedTime(new Date());
+        orderMapper.updateStatus(order);
+    }
+
+    @Override
     public Order getById(Integer oid, Integer uid) {
         Order order = orderMapper.findById(oid);
         if (order == null) return null;

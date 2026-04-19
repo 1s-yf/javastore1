@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit" />
+    <title>订单详情</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="../bootstrap3/js/holder.js"></script>
+    <link href="../bootstrap3/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <script src="../bootstrap3/jquery-1.9.1.min.js"></script>
+    <script src="../bootstrap3/js/bootstrap.js"></script>
+    <script src="../js/topbar.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="../bootstrap3/font-awesome-4.7.0/css/font-awesome.css" />
+    <link rel="stylesheet" type="text/css" href="../css/layout.css" />
+    <link rel="stylesheet" type="text/css" href="../css/top.css" />
+    <link rel="stylesheet" type="text/css" href="../css/footer.css" />
+    <link rel="stylesheet" type="text/css" href="../css/order.css" />
+</head>
+<body>
+<header class="header">
+    <div class="row">
+        <div class="col-md-3">
+            <a href="index.html"><img src="../images/index/stumalllogo.png" /></a>
+        </div>
+        <div class="col-md-9 top-item">
+            <ul class="list-inline pull-right">
+                <li><a href="favorites.html"><span class="fa fa-heart"></span>&nbsp;收藏</a></li>
+                <li class="li-split">|</li>
+                <li><a href="orders.html"><span class="fa fa-file-text"></span>&nbsp;订单</a></li>
+                <li class="li-split">|</li>
+                <li><a href="cart.html"><span class="fa fa-cart-plus"></span>&nbsp;购物车</a></li>
+                <li class="li-split">|</li>
+                <li>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown">
+                            <span id="top-dropdown-btn"><span class="fa fa-gears"></span>&nbsp;<span id="top-center-text">个人中心</span> <span class="caret"></span></span>
+                        </button>
+                        <ul class="dropdown-menu top-dropdown-ul" role="menu">
+                            <li><a href="password.html">修改密码</a></li>
+                            <li><a href="userdata.html">个人资料</a></li>
+                            <li><a href="upload.html">上传头像</a></li>
+                            <li><a href="address.html">收货管理</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="li-split">|</li>
+                <li><a id="link-login-logout" href="login.html"><span class="fa fa-user"></span>&nbsp;<span id="top-login-text">登录</span></a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<div class="row top-nav">
+    <div class="col-md-6">
+        <ul class="nav nav-pills">
+            <li><a href="#"></a></li>
+            <li class="active"><a href="index.html"><span class="fa fa-home"></span></a></li>
+            <li><a href="#">秒杀</a></li>
+            <li><a href="#">优惠券</a></li>
+            <li><a href="#">电脑VIP</a></li>
+            <li><a href="#">外卖</a></li>
+            <li><a href="#">超市</a></li>
+        </ul>
+    </div>
+    <div class="col-md-6">
+        <form action="search.html" class="form-inline pull-right" role="form">
+            <div class="form-group">
+                <input type="text" class="form-control" id="search" name="search" placeholder="请输入商品名称进行搜索">
+            </div>
+            <button type="submit" class="btn btn-default btn-sm"><span class="fa fa-search"></span></button>
+        </form>
+    </div>
+</div>
+
+<div class="container">
+    <div class="col-md-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">订单详情</div>
+            <div class="panel-body" id="order-detail-box">
+                加载中...
+            </div>
+            <div class="panel-footer">
+                <a class="btn btn-default" href="orders.html">返回订单列表</a>
+                <a class="btn btn-warning pull-right" id="btn-after-sale" href="javascript:void(0);">申请售后</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function() {
+        function getQueryParam(name) {
+            var search = window.location && window.location.search ? window.location.search : "";
+            if (!search || search.length <= 1) {
+                return null;
+            }
+            var query = search.substring(1);
+            var parts = query.split("&");
+            for (var i = 0; i < parts.length; i++) {
+                var kv = parts[i].split("=");
+                if (kv.length >= 2 && decodeURIComponent(kv[0]) === name) {
+                    return decodeURIComponent(kv.slice(1).join("="));
+                }
+            }
+            return null;
+        }
+
+        function statusText(status) {
+            if (status === 0) return "待付款";
+            if (status === 1) return "待发货";
+            if (status === 2) return "待收货";
+            if (status === 3) return "待评价";
+            if (status === 4) return "已完成";
+            if (status === 5) return "已售后";
+            return "";
+        }
+
+        function buildLogisticsHtml(status, oid) {
+            var html = '';
+            html += '<hr/>';
+            html += '<div><b>物流信息：</b></div>';
+
+            if (status === 0 || status === 1) {
+                html += '<div style="margin-top:8px;">暂无物流信息（待发货）</div>';
+                return html;
+            }
+
+            var company = '顺丰速运';
+            var trackingNo = 'SF' + oid;
+
+            html += '<div style="margin-top:8px;"><b>快递公司：</b>' + company + '</div>';
+            html += '<div><b>物流单号：</b>' + trackingNo + '</div>';
+
+            html += '<div style="margin-top:10px;">';
+            html += '<div>1. 商家已发货</div>';
+            html += '<div>2. 快件已揽收</div>';
+            html += '<div>3. 运输中</div>';
+            if (status >= 3 || status === 4 || status === 5) {
+                html += '<div>4. 已签收</div>';
+            }
+            html += '</div>';
+
+            return html;
+        }
+
+        function formatTime(value) {
+            if (!value) {
+                return "";
+            }
+            var d = new Date(value);
+            if (isNaN(d.getTime())) {
+                return value;
+            }
+            return d.toLocaleString();
+        }
+
+        var oid = parseInt(getQueryParam("oid"), 10);
+        if (isNaN(oid) || oid <= 0) {
+            $("#order-detail-box").html("订单号无效");
+            return;
+        }
+
+        $("#btn-after-sale").click(function () {
+            location.href = "afterSale.html?oid=" + oid;
+        });
+
+        $.ajax({
+            url: "/orders/getById",
+            type: "GET",
+            data: { oid: oid },
+            dataType: "json",
+            success: function (json) {
+                if (!json || json.state !== 200 || !json.data) {
+                    $("#order-detail-box").html("加载失败：" + (json && json.message ? json.message : ""));
+                    return;
+                }
+                var o = json.data;
+                var html = '';
+                html += '<div><b>订单号：</b>' + (o.oid || "") + '</div>';
+                html += '<div><b>订单状态：</b>' + statusText(o.status) + '</div>';
+                html += '<div><b>下单时间：</b>' + formatTime(o.orderTime) + '</div>';
+                html += '<div><b>支付时间：</b>' + formatTime(o.payTime) + '</div>';
+                html += '<div><b>收货人：</b>' + (o.recvName || "") + '&nbsp;&nbsp;' + (o.recvPhone || "") + '</div>';
+                html += '<div><b>收货地址：</b>' + (o.recvProvince || "") + (o.recvCity || "") + (o.recvArea || "") + (o.recvAddress || "") + '</div>';
+                html += '<div><b>订单总价：</b>¥' + (o.totalPrice || 0) + '</div>';
+
+                html += buildLogisticsHtml(o.status, o.oid || oid);
+
+                if (o.items && o.items.length) {
+                    html += '<hr/>';
+                    html += '<div><b>商品信息：</b></div>';
+                    for (var i = 0; i < o.items.length; i++) {
+                        var it = o.items[i];
+                        var price = (it.price || 0);
+                        html += '<div style="margin-top:8px;">' +
+                            '<img src="' + (it.image || '') + '" width="60" style="margin-right:10px;" />' +
+                            (it.title || '') +
+                            '&nbsp;&nbsp;单价：¥' + price +
+                            '&nbsp;&nbsp;数量：' + (it.num || 0) +
+                            '</div>';
+                    }
+                }
+                $("#order-detail-box").html(html);
+            },
+            error: function () {
+                $("#order-detail-box").html("请求失败，请先登录");
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -2,6 +2,11 @@
 .header {
 	padding: 20px 60px;
 }
+
+.header .row > .col-md-3 img {
+	width: 60%;
+	height: auto;
+}
 /*顶部选项总体*/
 .top-item a {
 	color: #777777;

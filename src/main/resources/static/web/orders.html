@@ -86,7 +86,9 @@
                             <div><a href="orders.html?status=0">待付款</a></div>
                             <div><a href="orders.html?status=1">待发货</a></div>
                             <div><a href="orders.html?status=2">待收货</a></div>
-                            <div><a href="orders.html?status=3">交易完成</a></div>
+                            <div><a href="orders.html?status=3">待评价</a></div>
+                            <div><a href="orders.html?status=4">已完成</a></div>
+                            <div><a href="orders.html?status=5">已售后</a></div>
                         </div>
                     </div>
                 </div>
@@ -161,13 +163,91 @@
 
         function getStatusText(status){
             switch(status){
-                case 0: return "待支付";
+                case 0: return "待付款";
                 case 1: return "待发货";
                 case 2: return "待收货";
-                case 3: return "交易完成";
-                case 5: return "售后中";
+                case 3: return "待评价";
+                case 4: return "已完成";
+                case 5: return "已售后";
                 default: return "未知状态";
             }
+        }
+
+        function getBuyAgainPid(order){
+            if(order && order.items && order.items.length > 0 && order.items[0] && order.items[0].pid){
+                return order.items[0].pid;
+            }
+            return null;
+        }
+
+        function renderActions(order){
+            var oid = order.oid;
+            var status = order.status;
+            var actionHtml = '';
+
+            if(status === 0){
+                var orderTime = order.orderTime ? new Date(order.orderTime).getTime() : 0;
+                var expire = orderTime ? (orderTime + 30 * 60 * 1000) : 0;
+                var cd = expire ? ('<span class="text-danger" data-countdown="1" data-expire="' + expire + '"></span>') : '';
+                actionHtml += '<button class="btn btn-primary btn-xs" onclick="payNow(' + oid + ')">立即付款</button>';
+                actionHtml += ' ' + cd;
+                return actionHtml;
+            }
+
+            if(status === 1){
+                actionHtml += '<button class="btn btn-default btn-xs" onclick="viewOrder(' + oid + ')">查看详情</button>';
+                actionHtml += ' <button class="btn btn-info btn-xs" onclick="urgeShip(' + oid + ')">催发货</button>';
+                return actionHtml;
+            }
+
+            if(status === 2){
+                actionHtml += '<button class="btn btn-default btn-xs" onclick="viewOrder(' + oid + ')">查看详情</button>';
+                actionHtml += ' <button class="btn btn-warning btn-xs" onclick="afterSale(' + oid + ')">申请售后</button>';
+                actionHtml += ' <button class="btn btn-success btn-xs" onclick="confirmReceive(' + oid + ')">确认收货</button>';
+                return actionHtml;
+            }
+
+            if(status === 3){
+                var pid = getBuyAgainPid(order);
+                actionHtml += '<button class="btn btn-primary btn-xs" onclick="goComment(' + oid + ')">立即评价</button>';
+                actionHtml += pid ? (' <button class="btn btn-default btn-xs" onclick="buyAgain(' + pid + ')">再次购买</button>') : '';
+                return actionHtml;
+            }
+
+            if(status === 4){
+                var pid2 = getBuyAgainPid(order);
+                actionHtml += pid2 ? ('<button class="btn btn-default btn-xs" onclick="buyAgain(' + pid2 + ')">再次购买</button>') : '';
+                return actionHtml;
+            }
+
+            if(status === 5){
+                actionHtml += '<button class="btn btn-default btn-xs" disabled>已售后</button>';
+                return actionHtml;
+            }
+
+            actionHtml += '<button class="btn btn-default btn-xs" onclick="viewOrder(' + oid + ')">查看详情</button>';
+            return actionHtml;
+        }
+
+        function updateCountdowns(){
+            $("[data-countdown='1']").each(function(){
+                var expire = parseInt($(this).attr("data-expire"), 10);
+                if(!expire){
+                    $(this).text("");
+                    return;
+                }
+                var now = new Date().getTime();
+                var left = expire - now;
+                if(left <= 0){
+                    $(this).text("(已超时)");
+                    return;
+                }
+                var sec = Math.floor(left / 1000);
+                var min = Math.floor(sec / 60);
+                var s = sec % 60;
+                var text = "(剩余" + min + "分" + (s < 10 ? ("0" + s) : s) + "秒)";
+                $(this).text(text);
+            });
         }
 
         // 从URL获取status参数
@@ -214,12 +294,12 @@
                         let oid = order.oid;
                         let statusText = getStatusText(order.status);
                         let orderTime = order.orderTime ? new Date(order.orderTime).toLocaleString() : "";
-                        let totalPrice = (order.totalPrice || 0) / 100;
+                        let totalPrice = (order.totalPrice || 0);
 
                         let itemsHtml = "";
                         if(order.items && order.items.length > 0){
                             order.items.forEach(item => {
-                                let price = (item.price || 0)/100;
+                                let price = (item.price || 0);
                                 itemsHtml += `
                                 <div class="media" style="margin-bottom:10px;">
                                     <div class="media-left">
@@ -227,7 +307,7 @@
                                     </div>
                                     <div class="media-body">
                                         <h5>${item.title}</h5>
-                                        <p>单价：¥${price.toFixed(2)} × ${item.num} 件</p>
+                                        <p>单价：¥${price} × ${item.num} 件</p>
                                     </div>
                                 </div>
                                 `;
@@ -244,19 +324,18 @@
                                 ${itemsHtml}
                                 <hr>
                                 <p style="text-align:right;">
-                                    订单总价：<b style="color:red;font-size:16px;">¥${totalPrice.toFixed(2)}</b>
+                                    订单总价：<b style="color:red;font-size:16px;">¥${totalPrice}</b>
                                 </p>
                             </div>
                             <div class="panel-footer text-right">
-                                <button class="btn btn-default btn-xs" onclick="viewOrder(${oid})">查看订单</button>
-                                <button class="btn btn-warning btn-xs" onclick="afterSale(${oid})">申请售后</button>
-                                <button class="btn btn-success btn-xs" onclick="confirmReceive(${oid})">确认收货</button>
+                                ${renderActions(order)}
                             </div>
                         </div>
                         `;
                     });
 
                     $("#orders-list").html(html);
+                    updateCountdowns();
                 },
                 error: function(){
                     $("#orders-list").html('<div style="padding:20px;">请求失败，请先登录</div>');
@@ -264,25 +343,43 @@
             });
         }
 
+        setInterval(updateCountdowns, 1000);
+
         function viewOrder(oid){
-            alert("查看订单："+oid);
+			location.href = "orderDetail.html?oid=" + oid;
         }
 
         function afterSale(oid){
-            $.get("/orders/applyAfterSale?oid="+oid, function(res){
-                if(res.state == 200){
-                    alert("申请售后成功");
-                    loadOrderList();
-                }else{
-                    alert(res.message);
-                }
-            });
+			location.href = "afterSale.html?oid=" + oid;
+        }
+
+        function buyAgain(pid){
+            location.href = "product.html?id=" + pid;
+        }
+
+        function goComment(oid){
+            location.href = "comment.html?oid=" + oid;
+        }
+
+        function payNow(oid){
+            alert("请前往支付页面完成付款");
+        }
+
+        function urgeShip(oid){
+            alert("已提醒商家尽快发货");
         }
 
         function confirmReceive(oid){
+            if(!confirm("是否确认收货？")){
+                return;
+            }
             $.get("/orders/confirmReceive?oid="+oid, function(res){
                 if(res.state == 200){
-                    alert("确认收货成功");
+                    var go = confirm("收货成功，快来评价吧！\n点击“确定”立即评论，点击“取消”稍后再说");
+                    if(go){
+                        goComment(oid);
+                        return;
+                    }
                     loadOrderList();
                 }else{
                     alert(res.message);

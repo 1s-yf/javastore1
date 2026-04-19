@@ -9,5 +9,6 @@ public interface IOrderService {
     List<Order> getByUid(Integer uid);
     void confirmReceive(Integer oid);
     void applyAfterSale(Integer oid);
+    void complete(Integer oid);
     Order getById(Integer oid, Integer uid);
 }

@@ -129,10 +129,9 @@
 				</div>
 				<div class="col-md-6">
 					<h3 id="product-title" class="col-md-12 title-row-1">戴尔Dell 燃700R1605银色</h3>
-					<p id="product-sell-point" class="col-md-12 text-row-1"><small>仅上海，广州，沈阳仓有货！预购从速！</small></p>
+					<p id="product-sell-point" class="col-md-12 text-row-1"><small></small></p>
 					<div class="col-md-12 price-bar">
 						<small>售价：</small> ¥<span id="product-price">4899.00</span>
-						<div><small>*退货补运费 *7天无理由退货 *24小时快速退款 </small></div>
 					</div>
 					<form class="form-inline product-form col-md-12" role="form">
 						<div class="col-md-12 form-space">
@@ -140,6 +139,13 @@
 							<input id="numDown" type="button" value="-" class="num-btn" />
 							<input id="num" type="text" size="2" readonly="readonly" class="num-text" value="1">
 							<input id="numUp" class="num-btn" type="button" value="+" />
+						</div>
+						<div class="col-md-12 form-space">
+							<div style="display: inline-block; padding: 6px 10px; border: 1px solid #8b0000; color: #8b0000; background: #fff5f5; border-radius: 4px;">
+								<small style="font-weight: bold; margin-right: 14px;">退货补运费</small>
+								<small style="font-weight: bold; margin-right: 14px;">7天无理由退货</small>
+								<small style="font-weight: bold;">24小时快速退款</small>
+							</div>
 						</div>
 						<div class="col-md-12 form-space">
 							<p><small><b>电脑商城</b>发货并提供售后服务,今日下单,明日送达</small></p>
@@ -301,7 +307,11 @@
 					success: function(json) {
 						if (json.state == 200) {
 							$("#product-title").html(json.data.title);
-							$("#product-sell-point").html(json.data.sellPoint);
+							var spText = json.data.sellPoint;
+							if (spText === "仅上海，广州，沈阳仓有货！预购从速！") {
+								spText = "";
+							}
+							$("#product-sell-point").html(spText);
 							$("#product-price").html(json.data.price);
 							if (from === "seckill" && sp && /^\d+(?:\.\d{1,2})?$/.test(sp)) {
 								$("#product-price").html(sp);
@@ -322,11 +332,11 @@
 
 				// ========== 以下是新增的功能代码，完全不影响原有逻辑 ==========
 				// 1. 数量加减按钮
-				$('#numUp').click(function(){
+				$('#numUp').off('click').on('click', function(){
 					let num = parseInt($('#num').val());
 					$('#num').val(num + 1);
 				});
-				$('#numDown').click(function(){
+				$('#numDown').off('click').on('click', function(){
 					let num = parseInt($('#num').val());
 					if(num > 1) $('#num').val(num - 1);
 				});
@@ -389,7 +399,11 @@
 				// 4. ✅ 立即购买 —— 跳转到确认订单页面（和购物车完全一样）
 				$('#btn-buy-now').click(function(){
 					let count = parseInt($('#num').val());
-					location.href = "orderConfirm.html?ids=" + id + "&counts=" + count;
+					let extra = "";
+					if (from === "seckill" && sp && /^\d+(?:\.\d{1,2})?$/.test(sp)) {
+						extra = "&from=seckill&sp=" + encodeURIComponent(sp);
+					}
+					location.href = "orderConfirm.html?ids=" + id + "&counts=" + count + extra;
 				});
 				// =========================================================
 			});

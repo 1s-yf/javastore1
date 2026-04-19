@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit" />
+    <title>订单评价</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="../bootstrap3/js/holder.js"></script>
+    <link href="../bootstrap3/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <script src="../bootstrap3/jquery-1.9.1.min.js"></script>
+    <script src="../bootstrap3/js/bootstrap.js"></script>
+    <script src="../js/topbar.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="../bootstrap3/font-awesome-4.7.0/css/font-awesome.css" />
+    <link rel="stylesheet" type="text/css" href="../css/layout.css" />
+    <link rel="stylesheet" type="text/css" href="../css/top.css" />
+    <link rel="stylesheet" type="text/css" href="../css/footer.css" />
+</head>
+<body>
+<header class="header">
+    <div class="row">
+        <div class="col-md-3">
+            <a href="index.html"><img src="../images/index/stumalllogo.png" /></a>
+        </div>
+        <div class="col-md-9 top-item">
+            <ul class="list-inline pull-right">
+                <li><a href="favorites.html"><span class="fa fa-heart"></span>&nbsp;收藏</a></li>
+                <li class="li-split">|</li>
+                <li><a href="orders.html"><span class="fa fa-file-text"></span>&nbsp;订单</a></li>
+                <li class="li-split">|</li>
+                <li><a href="cart.html"><span class="fa fa-cart-plus"></span>&nbsp;购物车</a></li>
+                <li class="li-split">|</li>
+                <li>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown">
+                            <span id="top-dropdown-btn"><span class="fa fa-gears"></span>&nbsp;<span id="top-center-text">个人中心</span> <span class="caret"></span></span>
+                        </button>
+                        <ul class="dropdown-menu top-dropdown-ul" role="menu">
+                            <li><a href="password.html">修改密码</a></li>
+                            <li><a href="userdata.html">个人资料</a></li>
+                            <li><a href="upload.html">上传头像</a></li>
+                            <li><a href="address.html">收货管理</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="li-split">|</li>
+                <li><a id="link-login-logout" href="login.html"><span class="fa fa-user"></span>&nbsp;<span id="top-login-text">登录</span></a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<div class="row top-nav">
+    <div class="col-md-6">
+        <ul class="nav nav-pills">
+            <li><a href="#"></a></li>
+            <li class="active"><a href="index.html"><span class="fa fa-home"></span></a></li>
+            <li><a href="#">秒杀</a></li>
+            <li><a href="#">优惠券</a></li>
+            <li><a href="#">电脑VIP</a></li>
+            <li><a href="#">外卖</a></li>
+            <li><a href="#">超市</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="container" style="margin-top:20px;">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">订单评价</div>
+            <div class="panel-body">
+                <div id="comment-order-info">加载中...</div>
+                <hr/>
+                <div id="comment-items"></div>
+                <hr/>
+                <button class="btn btn-primary" id="btn-submit">提交评价</button>
+                <a class="btn btn-default" href="orders.html">返回订单</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function(){
+        function getQueryParam(name) {
+            var search = window.location && window.location.search ? window.location.search : "";
+            if (!search || search.length <= 1) {
+                return null;
+            }
+            var query = search.substring(1);
+            var parts = query.split("&");
+            for (var i = 0; i < parts.length; i++) {
+                var kv = parts[i].split("=");
+                if (kv.length >= 2 && decodeURIComponent(kv[0]) === name) {
+                    return decodeURIComponent(kv.slice(1).join("="));
+                }
+            }
+            return null;
+        }
+
+        function escapeHtml(text) {
+            return String(text == null ? "" : text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/\"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function getStorageKey(pid){
+            return "product_comments_" + pid;
+        }
+
+        function appendComment(pid, obj){
+            var key = getStorageKey(pid);
+            var arr = [];
+            try {
+                arr = JSON.parse(localStorage.getItem(key) || '[]');
+            } catch (e) {
+                arr = [];
+            }
+            arr.unshift(obj);
+            localStorage.setItem(key, JSON.stringify(arr));
+        }
+
+        var oid = parseInt(getQueryParam("oid"), 10);
+        if(isNaN(oid) || oid <= 0){
+            $("#comment-order-info").html("订单号无效");
+            $("#btn-submit").prop("disabled", true);
+            return;
+        }
+
+        var orderData = null;
+
+        function render(){
+            if(!orderData){
+                return;
+            }
+            $("#comment-order-info").html('<div><b>订单号：</b>' + (orderData.oid || '') + '</div>');
+
+            var html = '';
+            if(orderData.items && orderData.items.length){
+                for(var i=0;i<orderData.items.length;i++){
+                    var it = orderData.items[i];
+                    html += '' +
+                        '<div class="panel panel-info" style="margin-bottom:10px;">' +
+                            '<div class="panel-heading">' + escapeHtml(it.title || '') + '</div>' +
+                            '<div class="panel-body">' +
+                                '<div style="margin-bottom:8px;">' +
+                                    '<img src="' + escapeHtml(it.image || '') + '" width="60" style="margin-right:10px;" />' +
+                                    '数量：' + (it.num || 0) +
+                                '</div>' +
+                                '<div class="form-group">' +
+                                    '<label>评分（1-5）</label>' +
+                                    '<select class="form-control" data-score="1" data-pid="' + (it.pid || 0) + '">' +
+                                        '<option value="5">5</option>' +
+                                        '<option value="4">4</option>' +
+                                        '<option value="3">3</option>' +
+                                        '<option value="2">2</option>' +
+                                        '<option value="1">1</option>' +
+                                    '</select>' +
+                                '</div>' +
+                                '<div class="form-group">' +
+                                    '<label>评价内容</label>' +
+                                    '<textarea class="form-control" rows="3" data-content="1" data-pid="' + (it.pid || 0) + '"></textarea>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>';
+                }
+            } else {
+                html = '<div>暂无商品</div>';
+            }
+            $("#comment-items").html(html);
+        }
+
+        $.ajax({
+            url: "/orders/getById",
+            type: "GET",
+            data: { oid: oid },
+            dataType: "json",
+            success: function(json){
+                if(!json || json.state !== 200 || !json.data){
+                    $("#comment-order-info").html("加载失败：" + (json && json.message ? json.message : ""));
+                    return;
+                }
+                orderData = json.data;
+                render();
+            },
+            error: function(){
+                $("#comment-order-info").html("请求失败，请先登录");
+            }
+        });
+
+        $("#btn-submit").click(function(){
+            if(!orderData || !orderData.items || !orderData.items.length){
+                alert("暂无可评价商品");
+                return;
+            }
+
+            for(var i=0;i<orderData.items.length;i++){
+                var it = orderData.items[i];
+                var pid = parseInt(it.pid, 10);
+                if(isNaN(pid) || pid <= 0){
+                    continue;
+                }
+                var score = parseInt($('select[data-score="1"][data-pid="' + pid + '"]').val(), 10);
+                if(isNaN(score)) score = 5;
+                var content = $('textarea[data-content="1"][data-pid="' + pid + '"]').val() || '';
+                appendComment(pid, {
+                    oid: oid,
+                    pid: pid,
+                    title: it.title || '',
+                    score: score,
+                    content: content,
+                    time: new Date().toLocaleString()
+                });
+            }
+
+            $.get("/orders/complete", { oid: oid }, function(res){
+                if(res && res.state === 200){
+                    alert("评价成功");
+                    location.href = "orders.html";
+                    return;
+                }
+                alert(res && res.message ? res.message : "评价失败");
+            }).fail(function(){
+                alert("评价失败");
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -4,6 +4,7 @@ import com.cy.store.interceptor.LoginInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.ArrayList;
@@ -34,7 +35,20 @@ public class LoginInterceptorConfigurer implements WebMvcConfigurer {
         patterns.add("/users/login");
         patterns.add("/users/status");
         patterns.add("/users/logout");
+        patterns.add("/upload/**");
 
         registry.addInterceptor(interceptor).addPathPatterns("/**").excludePathPatterns(patterns);
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // 将 /upload/** 映射到 Servlet 容器的 getRealPath("upload") 目录
+        // 也映射到项目根目录下的 upload/ 作为 fallback
+        String userDir = System.getProperty("user.dir");
+        registry.addResourceHandler("/upload/**")
+                .addResourceLocations(
+                        "file:" + userDir + "/upload/",
+                        "/upload/"
+                );
     }
 }

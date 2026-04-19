@@ -4,9 +4,9 @@
 
     <insert id="insert" parameterType="com.cy.store.entity.Order" useGeneratedKeys="true" keyProperty="oid">
         INSERT INTO t_order (
-            uid, recvName, recvPhone, recvProvince, recvCity, recvArea, recvAddress,
-            totalPrice, status, orderTime, payTime,
-            createdUser, createdTime, modifiedUser, modifiedTime
+            uid, recv_name, recv_phone, recv_province, recv_city, recv_area, recv_address,
+            total_price, status, order_time, pay_time,
+            created_user, created_time, modified_user, modified_time
         ) VALUES (
             #{uid}, #{recvName}, #{recvPhone}, #{recvProvince}, #{recvCity}, #{recvArea}, #{recvAddress},
             #{totalPrice}, #{status}, #{orderTime}, #{payTime},
@@ -15,24 +15,24 @@
     </insert>
 
     <select id="findByUid" resultType="com.cy.store.entity.Order">
-        SELECT oid, uid, recvName, recvPhone, recvProvince, recvCity, recvArea,
-               recvAddress, totalPrice, status, orderTime, payTime,
-               createdUser, createdTime, modifiedUser, modifiedTime
+        SELECT oid, uid, recv_name, recv_phone, recv_province, recv_city, recv_area,
+               recv_address, total_price, status, order_time, pay_time,
+               created_user, created_time, modified_user, modified_time
         FROM t_order
         WHERE uid = #{uid}
         ORDER BY oid DESC
     </select>
 
     <select id="findById" resultType="com.cy.store.entity.Order">
-        SELECT oid, uid, recvName, recvPhone, recvProvince, recvCity, recvArea,
-               recvAddress, totalPrice, status, orderTime, payTime
+        SELECT oid, uid, recv_name, recv_phone, recv_province, recv_city, recv_area,
+               recv_address, total_price, status, order_time, pay_time
         FROM t_order
         WHERE oid = #{oid}
     </select>
 
     <update id="updateStatus">
         UPDATE t_order
-        SET status = #{status}, modifiedTime = #{modifiedTime}
+        SET status = #{status}, modified_time = #{modifiedTime}
         WHERE oid = #{oid}
     </update>
 
